@@ -1,0 +1,4 @@
+{
+  "*.ts": ["npm run format", "npm run lint"],
+  "**/*.{json|yaml|yml}": "npm run format"
+}
