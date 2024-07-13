@@ -1,14 +1,15 @@
+import { BaseORMEntity } from '@infra/typeorm/shared/entities/base-orm.entity';
 import { User } from '@modules/user/entities/users.entity';
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
+  Entity,
   ManyToOne,
   JoinColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'investments' })
-export class Investment {
+@Entity('investments')
+export class Investment extends BaseORMEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -16,15 +17,15 @@ export class Investment {
   @JoinColumn({ name: 'owner_id' })
   owner: User;
 
-  @Column()
+  @Column({ type: 'timestamp with time zone' })
   creation_date: Date;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   initial_value: number;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   current_value: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: '255' })
   status: string;
 }

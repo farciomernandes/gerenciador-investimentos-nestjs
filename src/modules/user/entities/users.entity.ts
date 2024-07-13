@@ -1,17 +1,16 @@
+import { BaseORMEntity } from '@infra/typeorm/shared/entities/base-orm.entity';
 import { Investment } from '@modules/investment/entities/investment.entity';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   Index,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'users' })
-export class User {
+export class User extends BaseORMEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -30,12 +29,6 @@ export class User {
   @IsNotEmpty({ message: 'O campo password é obrigatório' })
   @IsString()
   password: string;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt?: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt?: Date;
 
   @OneToMany(() => Investment, (investment) => investment.owner)
   investments: Investment[];
