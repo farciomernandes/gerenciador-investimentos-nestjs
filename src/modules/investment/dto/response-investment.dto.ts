@@ -29,6 +29,13 @@ export class UserWithoutPassword {
 
 export class InvestmentDto extends CreateInvestmentDto {
   @ApiProperty({
+    description: 'The ID of the owner',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsNotEmpty()
+  id: string;
+
+  @ApiProperty({
     description: 'The status of the investment',
     example: InvestmentStatus.IN_PROGRESS,
   })
@@ -44,7 +51,8 @@ export class InvestmentDto extends CreateInvestmentDto {
 
   static toDto(payload: Investment): InvestmentDto {
     const investmentDto = new InvestmentDto();
-    investmentDto.creation_date = payload.created_at;
+    investmentDto.id = payload.id;
+    investmentDto.creation_date = payload.creation_date;
     investmentDto.current_value = Number(payload.current_value);
     investmentDto.initial_value = Number(payload.initial_value);
     investmentDto.owner_id = payload.owner.id;

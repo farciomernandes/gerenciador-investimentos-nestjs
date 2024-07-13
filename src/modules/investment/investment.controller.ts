@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Query,
+  Patch,
+} from '@nestjs/common';
 import { InvestmentProvider } from './providers/investment.provider';
 import { CreateInvestmentDto } from './dto/create-investment.dto';
 import { CreateInvestmentUseCase } from './usecases/create-investment.usecase';
@@ -6,6 +14,7 @@ import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ResponseInvestmentDto } from './dto/response-investment.dto';
 import { InvesmentParamsDTO } from './dto/investment-params.dto';
 import { Investment } from './entities/investment.entity';
+import { UpdateInvestmentDto } from './dto/update-investment.dto';
 
 @ApiTags('api/v1/investments')
 @Controller('investments')
@@ -68,5 +77,21 @@ export class InvestmentController {
     } else {
       return this.investmentProvider.findAll(filter.page, filter.limit);
     }
+  }
+
+  @Patch(':id')
+  @ApiBody({
+    type: UpdateInvestmentDto,
+    description: 'The value update investment',
+  })
+  @ApiOkResponse({
+    description: 'Updated Investment',
+    type: Investment,
+  })
+  async update(
+    @Param('id') id: string,
+    @Body() updateInvestmentDto: UpdateInvestmentDto,
+  ): Promise<Investment> {
+    return this.investmentProvider.update(updateInvestmentDto, id);
   }
 }

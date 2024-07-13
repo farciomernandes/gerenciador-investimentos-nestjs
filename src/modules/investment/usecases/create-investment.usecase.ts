@@ -26,7 +26,10 @@ export class CreateInvestmentUseCase {
     );
     if (investmentAlreadyExists) {
       return this.investmentProvider.update(
-        createInvestmentDto,
+        {
+          amount: createInvestmentDto.initial_value,
+          type: 'input',
+        },
         investmentAlreadyExists.id,
       );
     }

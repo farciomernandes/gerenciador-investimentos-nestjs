@@ -8,7 +8,7 @@ import { FindManyOptions, FindOptionsWhere } from 'typeorm';
 import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
 import { InvesmentParamsDTO } from '../dto/investment-params.dto';
 import { InvestmentStatus } from '../enums/investments';
-import { CreateInvestmentDto } from '../dto/create-investment.dto';
+import { UpdateInvestmentDto } from '../dto/update-investment.dto';
 
 @Injectable()
 export class InvestmentProvider {
@@ -19,31 +19,25 @@ export class InvestmentProvider {
     return Investment.toDto(investment);
   }
 
-  async update(payload: CreateInvestmentDto, id: string): Promise<Investment> {
-    const investment = await this.investmentRepository.findOne({
-      where: { id },
-    });
-
+  async update(payload: UpdateInvestmentDto, id: string): Promise<Investment> {
+    const investment = await this.getInvestmentById(id);
     if (!investment) {
       throw new BadRequestException(`Investment with ID ${id} not found`);
     }
 
-    const newValue = Number(payload.initial_value);
-
-    if (isNaN(newValue)) {
-      throw new BadRequestException('Invalid current_value provided');
+    const amount = Number(payload.amount);
+    if (isNaN(amount)) {
+      throw new BadRequestException('Invalid amount provided');
     }
 
-    const updatedValue = Number(investment.current_value) + newValue;
-
+    const updatedValue = this.calculateUpdatedValue(investment, payload);
     if (updatedValue < 0) {
       throw new BadRequestException(
         'Investment update would result in negative current_value',
       );
     }
 
-    investment.current_value = Number(updatedValue);
-
+    investment.current_value = updatedValue;
     return this.investmentRepository.save(investment);
   }
 
@@ -51,10 +45,9 @@ export class InvestmentProvider {
     page: number = 1,
     limit: number = 10,
   ): Promise<ResponseInvestmentDto> {
-    const skip = (page - 1) * limit;
     const [investments, total] = await this.investmentRepository.findAndCount({
       relations: ['owner'],
-      skip,
+      skip: (page - 1) * limit,
       take: limit,
     });
     const totalPages = Math.ceil(total / limit);
@@ -68,33 +61,23 @@ export class InvestmentProvider {
     owner_id: string,
     { page, limit, status }: InvesmentParamsDTO,
   ): Promise<ResponseInvestmentDto> {
-    const skip = (page - 1) * limit;
     const options: FindManyOptions<Investment> = {
       relations: ['owner'],
       where: {
         owner: { id: owner_id },
       } as FindOptionsWhere<Investment>,
-      skip,
+      skip: (page - 1) * limit,
       take: limit,
     };
 
     if (status !== undefined && status !== null) {
-      if (
-        !Object.values(InvestmentStatus).includes(status as InvestmentStatus)
-      ) {
-        throw new BadRequestException(`Invalid status type: ${status}.`);
-      }
-
-      options.where = {
-        ...options.where,
-        status,
-      };
+      this.validateStatus(status);
+      options.where = { ...options.where, status };
     }
 
     const [investments, total] =
       await this.investmentRepository.findAndCount(options);
     const totalPages = Math.ceil(total / limit);
-
     return this.buildResponse(
       investments.map((investment) => InvestmentDto.toDto(investment)),
       totalPages,
@@ -107,19 +90,14 @@ export class InvestmentProvider {
     status?: string,
   ): Promise<ResponseInvestmentDto> {
     if (status) {
-      if (
-        !Object.values(InvestmentStatus).includes(status as InvestmentStatus)
-      ) {
-        throw new BadRequestException(`Invalid status type: ${status}.`);
-      }
+      this.validateStatus(status);
     }
-    const skip = (page - 1) * limit;
     const options: FindManyOptions<Investment> = {
       relations: ['owner'],
       where: {
         ...(status ? { status } : {}),
       } as FindOptionsWhere<Investment>,
-      skip,
+      skip: (page - 1) * limit,
       take: limit,
     };
     const [investments, total] =
@@ -142,6 +120,28 @@ export class InvestmentProvider {
     }
 
     return investment;
+  }
+
+  private async getInvestmentById(id: string): Promise<Investment | null> {
+    return this.investmentRepository.findOne({ where: { id } });
+  }
+
+  private calculateUpdatedValue(
+    investment: Investment,
+    payload: UpdateInvestmentDto,
+  ): number {
+    const amount = Number(payload.amount);
+    if (payload.type === 'input') {
+      return Number(investment.current_value) + amount;
+    } else {
+      return Number(investment.current_value) - amount;
+    }
+  }
+
+  private validateStatus(status: string): void {
+    if (!Object.values(InvestmentStatus).includes(status as InvestmentStatus)) {
+      throw new BadRequestException(`Invalid status type: ${status}.`);
+    }
   }
 
   private buildResponse(
