@@ -4,25 +4,37 @@ import {
   VersioningType,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import process from 'process';
 import * as basicAuth from 'express-basic-auth';
 
 export abstract class Setups {
   static app: INestApplication;
+  static configService: ConfigService;
 
   static setApp(app: INestApplication): typeof Setups {
     this.app = app;
+    this.configService = this.app.get(ConfigService);
     return this;
   }
 
   static swagger(): typeof Setups {
     this.app.enableVersioning({ type: VersioningType.URI });
+
+    const appName =
+      this.configService.get<string>('APP_NAME', 'New application') ||
+      'New application';
+    const appDescription =
+      this.configService.get<string>(
+        'APP_DESCRIPTION',
+        'The new application description',
+      ) || 'The new application description';
+    const appVersion =
+      this.configService.get<string>('API_VERSION', '1') || '1';
+
     const config = new DocumentBuilder()
-      .setTitle('New application')
-      .setDescription('The new application description')
-      .setVersion('1')
+      .setTitle(appName)
+      .setDescription(appDescription)
+      .setVersion(appVersion)
       .addBearerAuth()
       .build();
 
@@ -48,30 +60,15 @@ export abstract class Setups {
   }
 
   static createChallenge() {
-    const appName = process.env.APP_NAME as string;
-    const username = (process.env.SWAGGER_USERNAME as string) || appName;
+    const appName = this.configService.get<string>('APP_NAME') || 'app';
+    const username =
+      this.configService.get<string>('SWAGGER_USERNAME', appName) || appName;
     const password =
-      (process.env.SWAGGER_PASSWORD as string) || `pass-${appName}`;
-    const challenge = {};
+      this.configService.get<string>('SWAGGER_PASSWORD', `pass-${appName}`) ||
+      `pass-${appName}`;
+    const challenge: { [key: string]: string } = {};
     challenge[username] = password;
     return challenge;
-  }
-
-  static microservice(): typeof Setups {
-    const configService = this.app.get(ConfigService);
-    const defaultBroker = 'localhost:9092';
-
-    this.app.connectMicroservice({
-      transport: Transport.KAFKA,
-      options: {
-        client: {
-          clientId: '<client-id>',
-          brokers: [configService.get('COMMON_KAFKA_BROKERS', defaultBroker)],
-        },
-        consumer: { groupId: '<group-id>' },
-      },
-    });
-    return this;
   }
 
   static middlewares(): typeof Setups {
