@@ -9,7 +9,7 @@ export class CreateTableInvestment1720819308155 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'investment',
+        name: 'investments',
         columns: [
           {
             name: 'id',
@@ -19,21 +19,21 @@ export class CreateTableInvestment1720819308155 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'ownerId',
+            name: 'owner_id',
             type: 'uuid',
           },
           {
-            name: 'creationDate',
+            name: 'creation_date',
             type: 'timestamp',
           },
           {
-            name: 'initialValue',
+            name: 'initial_value',
             type: 'decimal',
             precision: 10,
             scale: 2,
           },
           {
-            name: 'currentValue',
+            name: 'current_value',
             type: 'decimal',
             precision: 10,
             scale: 2,
@@ -49,9 +49,9 @@ export class CreateTableInvestment1720819308155 implements MigrationInterface {
     );
 
     await queryRunner.createForeignKey(
-      'investment',
+      'investments',
       new TableForeignKey({
-        columnNames: ['ownerId'],
+        columnNames: ['owner_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'users',
         onDelete: 'CASCADE',
@@ -60,6 +60,6 @@ export class CreateTableInvestment1720819308155 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('investment');
+    await queryRunner.dropTable('investments');
   }
 }
