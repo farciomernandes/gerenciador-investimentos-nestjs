@@ -4,6 +4,7 @@ import { User } from '../entities/users.entity';
 import { UserRepository } from '@infra/typeorm/repositories/user.repository';
 import { CreateUserDto, UserResponseDto } from '../dtos/create-user.dto';
 import { CreateInvestmentDto } from '@modules/investment/dto/create-investment.dto';
+import { InvestmentStatus } from '@modules/investment/enums/investments';
 
 @Injectable()
 export class UserProvider {
@@ -25,7 +26,7 @@ export class UserProvider {
         creation_date: investment.creation_date,
         initial_value: investment.initial_value,
         current_value: investment.current_value,
-        status: investment.status,
+        status: InvestmentStatus[investment.status],
       })) as CreateInvestmentDto[];
       return { ...userWithoutPassword, investments };
     });

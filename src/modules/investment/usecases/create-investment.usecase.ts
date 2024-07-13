@@ -3,6 +3,8 @@ import { CreateInvestmentDto } from '../dto/create-investment.dto';
 import { InvestmentProvider } from '../providers/investment.provider';
 import { Investment } from '../entities/investment.entity';
 import { UserRepository } from '@infra/typeorm/repositories/user.repository';
+import { InvestmentStatus } from '../enums/investments';
+import { ResponseInvestmentDto } from '../dto/response-investment.dto';
 
 @Injectable()
 export class CreateInvestmentUseCase {
@@ -11,7 +13,9 @@ export class CreateInvestmentUseCase {
     private readonly investmentProvider: InvestmentProvider,
   ) {}
 
-  async execute(createInvestmentDto: CreateInvestmentDto): Promise<Investment> {
+  async execute(
+    createInvestmentDto: CreateInvestmentDto,
+  ): Promise<ResponseInvestmentDto> {
     const user = await this.userRepository.findOne({
       where: { id: createInvestmentDto.owner_id },
     });
@@ -24,7 +28,7 @@ export class CreateInvestmentUseCase {
     investment.initial_value = createInvestmentDto.initial_value;
     investment.creation_date = createInvestmentDto.creation_date;
     investment.current_value = createInvestmentDto.current_value;
-    investment.status = createInvestmentDto.status;
+    investment.status = InvestmentStatus.IN_PROGRESS;
 
     return this.investmentProvider.create(investment);
   }

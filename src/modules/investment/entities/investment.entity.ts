@@ -7,6 +7,7 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { InvestmentStatus } from '../enums/investments';
 
 @Entity('investments')
 export class Investment extends BaseORMEntity {
@@ -26,6 +27,26 @@ export class Investment extends BaseORMEntity {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   current_value: number;
 
-  @Column({ type: 'varchar', length: '255' })
-  status: string;
+  @Column({
+    type: 'enum',
+    enum: InvestmentStatus,
+    default: InvestmentStatus.ACTIVE,
+  })
+  status: InvestmentStatus;
+
+  static toDto(investment: Investment): any {
+    const investmentDto: any = {
+      creation_date: investment.creation_date,
+      initial_value: investment.initial_value,
+      current_value: investment.current_value,
+      status: investment.status,
+      owner: {
+        email: investment.owner.email,
+        name: investment.owner.name,
+        id: investment.owner.id,
+      },
+    };
+
+    return investmentDto;
+  }
 }
