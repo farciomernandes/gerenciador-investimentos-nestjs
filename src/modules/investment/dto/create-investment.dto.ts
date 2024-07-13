@@ -11,6 +11,12 @@ export class CreateInvestmentDto {
   owner_id: string;
 
   @ApiProperty({
+    description: 'The name of the investment',
+    example: 'Ethereum',
+  })
+  name: string;
+
+  @ApiProperty({
     description: 'The creation date of the investment',
     example: '2023-07-13T00:00:00.000Z',
   })
@@ -27,13 +33,6 @@ export class CreateInvestmentDto {
   @IsNotEmpty()
   initial_value: number;
 
-  @ApiProperty({
-    description: 'The current value of the investment',
-    example: 1100,
-  })
-  @IsNumber()
-  @Min(0, { message: 'Current value must not be negative' })
-  @IsNotEmpty()
   current_value: number;
 
   status: InvestmentStatus;

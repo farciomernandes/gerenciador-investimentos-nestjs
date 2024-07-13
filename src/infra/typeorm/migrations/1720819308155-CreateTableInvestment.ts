@@ -25,6 +25,11 @@ export class CreateTableInvestments1720819308155 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: 'name',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
             name: 'creation_date',
             type: 'timestamp with time zone',
             isNullable: false,

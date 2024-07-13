@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { InvestmentStatus } from '../enums/investments';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 @Entity('investments')
 export class Investment extends BaseORMEntity {
@@ -17,6 +18,11 @@ export class Investment extends BaseORMEntity {
   @ManyToOne(() => User, (user) => user.investments)
   @JoinColumn({ name: 'owner_id' })
   owner: User;
+
+  @Column({ type: 'varchar', nullable: true })
+  @IsNotEmpty({ message: 'O campo nome é obrigatório' })
+  @IsString()
+  name: string;
 
   @Column({ type: 'timestamp with time zone' })
   creation_date: Date;
@@ -37,8 +43,8 @@ export class Investment extends BaseORMEntity {
   static toDto(investment: Investment): any {
     const investmentDto: any = {
       creation_date: investment.creation_date,
-      initial_value: investment.initial_value,
-      current_value: investment.current_value,
+      initial_value: Number(investment.initial_value),
+      current_value: Number(investment.current_value),
       status: investment.status,
       owner: {
         email: investment.owner.email,
