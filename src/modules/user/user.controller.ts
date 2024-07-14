@@ -9,6 +9,7 @@ import {
 import { UserProvider } from './providers/user.provider';
 import { CreateUserDto, UserResponseDto } from './dtos/create-user.dto';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from '@modules/auth/decorator/public';
 
 @ApiTags('Users')
 @Controller('users')
@@ -28,6 +29,7 @@ export class UserController {
     type: CreateUserDto,
   })
   @HttpCode(HttpStatus.OK)
+  @Public()
   async create(@Body() createUserDto: CreateUserDto): Promise<any> {
     return this.userProvider.createUser(createUserDto);
   }
@@ -42,6 +44,7 @@ export class UserController {
     isArray: true,
   })
   @HttpCode(HttpStatus.OK)
+  @Public()
   async findAll(): Promise<UserResponseDto[]> {
     return this.userProvider.findAll();
   }

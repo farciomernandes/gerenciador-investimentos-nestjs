@@ -17,6 +17,7 @@ type ExceptionMessages = {
 export const ExceptionMessages: ExceptionMessages = {
   isNotEmpty: (prop) => `${prop} é obrigatório.`,
   isString: (prop) => `${prop} deve ser uma string.`,
+  isAlphanumeric: (prop) => `${prop} deve conter apenas números e letras.`,
   isAlphaWithWhitespaces: (prop) =>
     `${prop} deve conter apenas letras e espaços.`,
   isEmail: (prop) => `${prop} deve ser um email válido.`,
