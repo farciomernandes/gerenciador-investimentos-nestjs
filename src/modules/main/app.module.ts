@@ -6,6 +6,7 @@ import { UserModule } from '@modules/user/user.module';
 import { InvestmentModule } from '@modules/investment/investment.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSource } from '@infra/typeorm/datasource.config';
+import { WithdrawalModule } from '@modules/withdrawal/withdrawal.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { dataSource } from '@infra/typeorm/datasource.config';
     MainModule,
     UserModule,
     InvestmentModule,
+    WithdrawalModule,
   ],
   controllers: [],
   providers: [],
