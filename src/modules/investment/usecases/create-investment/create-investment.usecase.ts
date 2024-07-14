@@ -1,15 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateInvestmentDto } from '../dtos/create-investment.dto';
-import { InvestmentProvider } from '../providers/investment.provider';
-import { Investment } from '../entities/investment.entity';
+import { CreateInvestmentDto } from '../../dtos/create-investment.dto';
+import { Investment } from '../../entities/investment.entity';
 import { UserRepository } from '@infra/typeorm/repositories/user.repository';
-import { InvestmentStatus } from '../enums/investments';
+import { InvestmentStatus } from '../../enums/investments';
+import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
+import { UpdateInvestmentUseCase } from '../update-investment/update-investment.usecase';
 
 @Injectable()
 export class CreateInvestmentUseCase {
   constructor(
+    private readonly updateInvestmentUseCase: UpdateInvestmentUseCase,
     private readonly userRepository: UserRepository,
-    private readonly investmentProvider: InvestmentProvider,
+    private readonly investmentRepository: InvestmentRepository,
   ) {}
 
   async execute(createInvestmentDto: CreateInvestmentDto): Promise<Investment> {
@@ -20,12 +22,16 @@ export class CreateInvestmentUseCase {
     if (!user) {
       throw new BadRequestException('User não encontrado');
     }
-    const investmentAlreadyExists = await this.investmentProvider.findByName(
-      createInvestmentDto.name,
-      createInvestmentDto.owner_id,
-    );
+    const investmentAlreadyExists = await this.investmentRepository.findOne({
+      where: {
+        name: createInvestmentDto.name,
+        owner: {
+          id: createInvestmentDto.owner_id,
+        },
+      },
+    });
     if (investmentAlreadyExists) {
-      return this.investmentProvider.update(
+      return this.updateInvestmentUseCase.execute(
         {
           amount: createInvestmentDto.initial_value,
           type: 'input',
@@ -33,14 +39,18 @@ export class CreateInvestmentUseCase {
         investmentAlreadyExists.id,
       );
     }
-    const investment = new Investment();
-    investment.owner = user;
+    const investment = new CreateInvestmentDto();
+
     investment.initial_value = createInvestmentDto.initial_value;
     investment.creation_date = createInvestmentDto.creation_date;
     investment.current_value = createInvestmentDto.initial_value;
     investment.name = createInvestmentDto.name;
     investment.status = InvestmentStatus.IN_PROGRESS;
 
-    return this.investmentProvider.create(investment);
+    const investmentCreated =
+      await this.investmentRepository.create(investment);
+    investmentCreated.owner = user;
+
+    return await this.investmentRepository.save({ ...investmentCreated });
   }
 }

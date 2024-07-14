@@ -7,22 +7,30 @@ import {
   Query,
   Patch,
 } from '@nestjs/common';
-import { InvestmentProvider } from './providers/investment.provider';
 import { CreateInvestmentDto } from './dtos/create-investment.dto';
-import { CreateInvestmentUseCase } from './usecases/create-investment.usecase';
+import { CreateInvestmentUseCase } from './usecases/create-investment/create-investment.usecase';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ResponseInvestmentDto } from './dtos/response-investment.dto';
 import { InvesmentParamsDTO } from './dtos/investment-params.dto';
 import { Investment } from './entities/investment.entity';
 import { UpdateInvestmentDto } from './dtos/update-investment.dto';
 import { Withdrawal } from '@modules/withdrawal/entities/withdrawal.entity';
+import { GetInvestmentsByOwnerIdUseCase } from './usecases/get-investments-by-owner-id/get-investments-by-owner-id.usecase';
+import { GetInvestmentsUseCase } from './usecases/get-investments/get-investments.usecase';
+import { GetInvestmentUseCase } from './usecases/get-investment/get-investment.usecase';
+import { UpdateInvestmentUseCase } from './usecases/update-investment/update-investment.usecase';
+import { WithdrawInvestmentUseCase } from './usecases/withdraw-investment/withdraw-investment.usecase';
 
 @ApiTags('api/v1/investments')
 @Controller('investments')
 export class InvestmentController {
   constructor(
-    private readonly investmentProvider: InvestmentProvider,
     private readonly createInvestmentUseCase: CreateInvestmentUseCase,
+    private readonly getInvestmentsByOwnerIdUseCase: GetInvestmentsByOwnerIdUseCase,
+    private readonly getInvestmentsUseCase: GetInvestmentsUseCase,
+    private readonly getInvestmentUseCase: GetInvestmentUseCase,
+    private readonly updateInvestmentUseCase: UpdateInvestmentUseCase,
+    private readonly withdrawInvestmentUseCase: WithdrawInvestmentUseCase,
   ) {}
 
   @Post()
@@ -56,7 +64,7 @@ export class InvestmentController {
     @Param('owner_id') owner_id: string,
     @Query() filter: InvesmentParamsDTO,
   ): Promise<any> {
-    return this.investmentProvider.findAllByOwnerId(owner_id, filter);
+    return this.getInvestmentsByOwnerIdUseCase.execute(owner_id, filter);
   }
 
   @Get()
@@ -71,13 +79,13 @@ export class InvestmentController {
     @Query() filter: InvesmentParamsDTO,
   ): Promise<ResponseInvestmentDto> {
     if (filter.status) {
-      return this.investmentProvider.findAllWithStatus(
+      return this.getInvestmentsUseCase.execute(
         filter.page,
         filter.limit,
         filter.status,
       );
     } else {
-      return this.investmentProvider.findAll(filter.page, filter.limit);
+      return this.getInvestmentsUseCase.execute(filter.page, filter.limit);
     }
   }
 
@@ -94,7 +102,19 @@ export class InvestmentController {
     @Param('id') id: string,
     @Body() updateInvestmentDto: UpdateInvestmentDto,
   ): Promise<Investment> {
-    return this.investmentProvider.update(updateInvestmentDto, id);
+    return this.updateInvestmentUseCase.execute(updateInvestmentDto, id);
+  }
+
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Get an investment by id',
+  })
+  @ApiOkResponse({
+    description: 'Return an investment by id',
+    type: Investment,
+  })
+  async findOne(@Param('id') id: string): Promise<Investment | null> {
+    return this.getInvestmentUseCase.execute(id);
   }
 
   @Patch(':id/withdraw')
@@ -103,6 +123,6 @@ export class InvestmentController {
     type: Withdrawal,
   })
   async withdraw(@Param('id') id: string): Promise<Withdrawal> {
-    return this.investmentProvider.withdraw(id);
+    return this.withdrawInvestmentUseCase.execute(id);
   }
 }
