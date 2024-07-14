@@ -8,7 +8,13 @@ import {
 } from '@nestjs/common';
 import { UserProvider } from './providers/user.provider';
 import { CreateUserDto, UserResponseDto } from './dtos/create-user.dto';
-import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Public } from '@modules/auth/decorator/public';
 
 @ApiTags('Users')
@@ -44,7 +50,7 @@ export class UserController {
     isArray: true,
   })
   @HttpCode(HttpStatus.OK)
-  @Public()
+  @ApiBearerAuth()
   async findAll(): Promise<UserResponseDto[]> {
     return this.userProvider.findAll();
   }

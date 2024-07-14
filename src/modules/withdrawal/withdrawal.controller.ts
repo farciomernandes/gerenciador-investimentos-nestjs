@@ -12,10 +12,15 @@ import {
 import { Withdrawal } from './entities/withdrawal.entity';
 import { CreateWithdrawalDto } from './dtos/create-withdrawal.dto';
 import { ListWithdrawalDto } from './dtos/list-withdrawal.dto';
-import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { WithdrawalProvider } from './providers/wihdrawal.provider';
 import { PaginationFilter } from 'src/shared/filter/pagination.filter';
-import { Public } from '@modules/auth/decorator/public';
 
 @ApiTags('Withdrawals')
 @Controller('withdrawals')
@@ -35,7 +40,7 @@ export class WithdrawalController {
     type: Withdrawal,
   })
   @HttpCode(HttpStatus.OK)
-  @Public()
+  @ApiBearerAuth()
   async createWithdrawal(
     @Body() createWithdrawalDto: CreateWithdrawalDto,
   ): Promise<Withdrawal> {
@@ -51,7 +56,7 @@ export class WithdrawalController {
     type: ListWithdrawalDto,
   })
   @HttpCode(HttpStatus.OK)
-  @Public()
+  @ApiBearerAuth()
   async getWithdrawals(
     @Query() queryParams: PaginationFilter,
   ): Promise<ListWithdrawalDto> {
@@ -66,7 +71,7 @@ export class WithdrawalController {
     description: 'Withdrawal deleted successfully',
   })
   @HttpCode(HttpStatus.OK)
-  @Public()
+  @ApiBearerAuth()
   async deleteWithdrawal(@Param('id') id: string): Promise<void> {
     await this.withdrawalProvider.deleteWithdrawal(id);
   }

@@ -8,10 +8,17 @@ import {
   Patch,
   Delete,
   HttpCode,
+  Request,
   HttpStatus,
 } from '@nestjs/common';
 import { CreateInvestmentDto } from './dtos/create-investment.dto';
-import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ResponseInvestmentDto } from './dtos/response-investment.dto';
 import { InvesmentParamsDTO } from './dtos/investment-params.dto';
 import { Investment } from './entities/investment.entity';
@@ -20,11 +27,10 @@ import { Withdrawal } from '@modules/withdrawal/entities/withdrawal.entity';
 import { ICreateInvestmentUseCase } from './usecases/create-investment/interfaces/create-investment.interface';
 import { IGetInvestmentsByOwnerIdUseCase } from './usecases/get-investments-by-owner-id/interfaces/get-investments-by-owner-id.interface';
 import { IGetInvestmentsUseCase } from './usecases/get-investments/interfaces/get-investments.interface';
-import { IGetInvestmentUseCase } from './usecases/get-investment/interfaces/get-investment.interface';
 import { IWithdrawInvestmentUseCase } from './usecases/withdraw-investment/interfaces/withdraw-investment.interface';
 import { IUpdateInvestmentUseCase } from './usecases/update-investment/interfaces/update-investment.interface';
 import { IDeleteInvestmentUseCase } from './usecases/delete-investment/interfaces/delete-investment.interface';
-import { Public } from '@modules/auth/decorator/public';
+import { Request as expressRequest } from 'express';
 
 @ApiTags('Investments')
 @Controller('investments')
@@ -33,7 +39,6 @@ export class InvestmentController {
     private readonly createInvestmentUseCase: ICreateInvestmentUseCase,
     private readonly getInvestmentsByOwnerIdUseCase: IGetInvestmentsByOwnerIdUseCase,
     private readonly getInvestmentsUseCase: IGetInvestmentsUseCase,
-    private readonly getInvestmentUseCase: IGetInvestmentUseCase,
     private readonly updateInvestmentUseCase: IUpdateInvestmentUseCase,
     private readonly withdrawInvestmentUseCase: IWithdrawInvestmentUseCase,
     private readonly deleteInvestmentUseCase: IDeleteInvestmentUseCase,
@@ -53,10 +58,12 @@ export class InvestmentController {
     type: Investment,
   })
   @HttpCode(HttpStatus.OK)
-  @Public()
+  @ApiBearerAuth()
   async create(
+    @Request() req: expressRequest,
     @Body() createInvestmentDto: CreateInvestmentDto,
   ): Promise<Investment> {
+    createInvestmentDto.owner_id = req?.user.id;
     return this.createInvestmentUseCase.execute(createInvestmentDto);
   }
 
@@ -85,7 +92,7 @@ export class InvestmentController {
     type: ResponseInvestmentDto,
   })
   @HttpCode(HttpStatus.OK)
-  @Public()
+  @ApiBearerAuth()
   async findAll(
     @Query() filter: InvesmentParamsDTO,
   ): Promise<ResponseInvestmentDto> {
@@ -110,6 +117,7 @@ export class InvestmentController {
     type: Investment,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
   async update(
     @Param('id') id: string,
     @Body() updateInvestmentDto: UpdateInvestmentDto,
@@ -123,6 +131,7 @@ export class InvestmentController {
     type: Withdrawal,
   })
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
   async withdraw(@Param('id') id: string): Promise<Withdrawal> {
     return this.withdrawInvestmentUseCase.execute(id);
   }
@@ -132,6 +141,7 @@ export class InvestmentController {
     summary: 'Delete investment by id',
   })
   @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
   async delete(@Param('id') id: string): Promise<void> {
     return this.deleteInvestmentUseCase.execute(id);
   }

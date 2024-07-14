@@ -52,6 +52,6 @@ export class CreateInvestmentUseCase implements ICreateInvestmentUseCase {
       await this.investmentRepository.create(investment);
     investmentCreated.owner = user;
 
-    return await this.investmentRepository.save({ ...investmentCreated });
+    return await this.investmentRepository.save(investmentCreated);
   }
 }

@@ -3,11 +3,6 @@ import { IsNotEmpty, IsDateString, IsNumber, Min } from 'class-validator';
 import { InvestmentStatus } from '../enums/investments';
 
 export class CreateInvestmentDto {
-  @ApiProperty({
-    description: 'The ID of the owner',
-    example: '123e4567-e89b-12d3-a456-426614174000',
-  })
-  @IsNotEmpty()
   owner_id: string;
 
   @ApiProperty({

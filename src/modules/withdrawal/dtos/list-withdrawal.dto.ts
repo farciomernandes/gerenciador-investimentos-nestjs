@@ -41,7 +41,7 @@ export class WithdrawalResponse {
 export class ListWithdrawalDto {
   @ApiProperty({
     description: 'List of withdrawals',
-    type: [WithdrawalResponse],
+    type: WithdrawalResponse,
     isArray: true,
   })
   withdrawals: WithdrawalResponse[];

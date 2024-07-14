@@ -36,9 +36,9 @@ export class WithdrawalProvider {
           id: withdrawal.id,
           investment_id: withdrawal.investment_id,
           withdrawal_date: withdrawal.withdrawal_date,
-          amount: withdrawal.amount,
-          tax: withdrawal.tax,
-          net_amount: withdrawal.net_amount,
+          amount: Number(withdrawal.amount),
+          tax: Number(withdrawal.tax),
+          net_amount: Number(withdrawal.net_amount),
         };
         return withdrawalResponse;
       },
