@@ -8,13 +8,14 @@ import {
   Patch,
 } from '@nestjs/common';
 import { InvestmentProvider } from './providers/investment.provider';
-import { CreateInvestmentDto } from './dto/create-investment.dto';
+import { CreateInvestmentDto } from './dtos/create-investment.dto';
 import { CreateInvestmentUseCase } from './usecases/create-investment.usecase';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ResponseInvestmentDto } from './dto/response-investment.dto';
-import { InvesmentParamsDTO } from './dto/investment-params.dto';
+import { ResponseInvestmentDto } from './dtos/response-investment.dto';
+import { InvesmentParamsDTO } from './dtos/investment-params.dto';
 import { Investment } from './entities/investment.entity';
-import { UpdateInvestmentDto } from './dto/update-investment.dto';
+import { UpdateInvestmentDto } from './dtos/update-investment.dto';
+import { Withdrawal } from '@modules/withdrawal/entities/withdrawal.entity';
 
 @ApiTags('api/v1/investments')
 @Controller('investments')
@@ -30,7 +31,8 @@ export class InvestmentController {
   })
   @ApiBody({
     type: CreateInvestmentDto,
-    description: 'Payload to create an investment',
+    description:
+      'Payload to create an investment or update amount if name investment already exists!',
   })
   @ApiOkResponse({
     description: 'Created Investment',
@@ -93,5 +95,14 @@ export class InvestmentController {
     @Body() updateInvestmentDto: UpdateInvestmentDto,
   ): Promise<Investment> {
     return this.investmentProvider.update(updateInvestmentDto, id);
+  }
+
+  @Patch(':id/withdraw')
+  @ApiOkResponse({
+    description: 'Withdrawal successful',
+    type: Withdrawal,
+  })
+  async withdraw(@Param('id') id: string): Promise<Withdrawal> {
+    return this.investmentProvider.withdraw(id);
   }
 }

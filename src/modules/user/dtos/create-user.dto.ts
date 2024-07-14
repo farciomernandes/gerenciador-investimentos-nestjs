@@ -1,4 +1,4 @@
-import { CreateInvestmentDto } from '@modules/investment/dto/create-investment.dto';
+import { CreateInvestmentDto } from '@modules/investment/dtos/create-investment.dto';
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 

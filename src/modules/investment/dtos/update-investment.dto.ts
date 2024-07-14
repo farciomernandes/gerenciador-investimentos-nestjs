@@ -12,7 +12,7 @@ export class UpdateInvestmentDto {
 
   @ApiProperty({
     description: 'The amount',
-    example: 3000,
+    example: 'output',
   })
   @IsNotEmpty()
   type: 'input' | 'output';
