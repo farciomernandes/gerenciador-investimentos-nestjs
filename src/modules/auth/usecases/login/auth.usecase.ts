@@ -32,19 +32,21 @@ export class AuthUseCase implements IAuthUseCase {
       password,
       user.password,
     );
+
     if (!passwordMatch) {
       throw new BadRequestException(AuthErrorMessages.InvalidLogin);
     }
 
     const options: JwtSignOptions = {
-      secret: this.configService.get<string>('jwt.secret'),
-      expiresIn: this.configService.get<string>('jwt.expiresIn'),
+      secret: this.configService.get<string>('JWT_SECRET_KEY'),
+      expiresIn: this.configService.get<string>('JWT_EXPIRES_IN'),
     };
 
     const payload = {
       id: user.id,
     };
     const jwt = await this.jwtService.signAsync(payload, options);
+
     return LoginResponseDto.toDto({
       token: jwt,
       expires_in: options.expiresIn,

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { IAuthUseCase } from '../use-cases/login/interfaces/auth.interface';
-import { IGetUserByJwtUseCase } from '../use-cases/get-user-by-jwt/interfaces/get-user-by-jwt.inteface';
+import { IAuthUseCase } from '../usecases/login/interfaces/auth.interface';
+import { IGetUserByJwtUseCase } from '../usecases/get-user-by-jwt/interfaces/get-user-by-jwt.inteface';
 import { LoginResponseDto } from '../dtos/login-response.dto';
 import { LoginDto } from '../dtos/login.dto';
 

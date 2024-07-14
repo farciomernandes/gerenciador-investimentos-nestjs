@@ -3,6 +3,7 @@ import { UserRepository } from '@infra/typeorm/repositories/user.repository';
 import { BadRequestException } from '@nestjs/common';
 import { User } from '@modules/user/entities/users.entity';
 import { CreateUserDto } from '@modules/user/dtos/create-user.dto';
+import { BcryptHashUtils } from '@infra/utils/bcrypt-hash.utils';
 
 @Injectable()
 export class CreateUserUseCase {
@@ -18,7 +19,12 @@ export class CreateUserUseCase {
         `User with ${payload.email} email already exists!`,
       );
     }
-    const user = this.userRepository.create(payload);
+    const hashedPassword = await BcryptHashUtils.handle(payload.password);
+
+    const user = this.userRepository.create({
+      ...payload,
+      password: hashedPassword,
+    });
     return this.userRepository.save(user);
   }
 }

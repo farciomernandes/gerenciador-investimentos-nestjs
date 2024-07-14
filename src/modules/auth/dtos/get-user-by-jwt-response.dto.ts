@@ -55,13 +55,23 @@ export class GetUserByJwtResponseDto {
   @Expose()
   @Type(() => AuthResponse)
   @ApiProperty({
-    description: 'WorkDays data',
+    description: 'User data',
     type: [AuthResponse],
     required: true,
   })
   user: AuthResponse;
 
   static toDto(data: any): GetUserByJwtResponseDto {
+    return {
+      user: {
+        id: data.id,
+        created_at: data.created_at,
+        deleted_at: data.deleted_at,
+        email: data.email,
+        name: data.email,
+        updated_at: data.updated_at,
+      },
+    };
     return plainToInstance(GetUserByJwtResponseDto, data, {
       excludeExtraneousValues: true,
     });
