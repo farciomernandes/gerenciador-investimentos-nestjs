@@ -1,9 +1,9 @@
 import {
   ApiOkResponse,
   ApiOperation,
-  ApiHeader,
   ApiTags,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import {
   Controller,
@@ -51,16 +51,10 @@ export class AuthController {
     status: HttpStatus.OK,
     type: GetUserByJwtResponseDto,
   })
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'User authorization token',
-    required: true,
-  })
+  @ApiBearerAuth()
   async handle(
     @Request() req: expressRequest,
   ): Promise<GetUserByJwtResponseDto> {
-    // Validar com middleware para pegar o user do request
-    console.log('saca --------> ', req?.user);
-    return await this.authProvider.getUserbyId('mock-id');
+    return await this.authProvider.getUserbyId(req?.user.id);
   }
 }

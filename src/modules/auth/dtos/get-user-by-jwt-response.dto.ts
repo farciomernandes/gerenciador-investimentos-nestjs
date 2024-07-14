@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Type, plainToInstance } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 
 export class AuthResponse {
   @ApiProperty({
@@ -65,15 +65,12 @@ export class GetUserByJwtResponseDto {
     return {
       user: {
         id: data.id,
+        name: data.name,
+        email: data.email,
+        updated_at: data.updated_at,
         created_at: data.created_at,
         deleted_at: data.deleted_at,
-        email: data.email,
-        name: data.email,
-        updated_at: data.updated_at,
       },
     };
-    return plainToInstance(GetUserByJwtResponseDto, data, {
-      excludeExtraneousValues: true,
-    });
   }
 }

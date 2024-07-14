@@ -19,6 +19,6 @@ export class GetUserByJwtUseCase implements IGetUserByJwtUseCase {
       where: { id },
     });
 
-    return GetUserByJwtResponseDto.toDto({ user });
+    return GetUserByJwtResponseDto.toDto(user);
   }
 }
