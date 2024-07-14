@@ -24,6 +24,7 @@ import { IGetInvestmentUseCase } from './usecases/get-investment/interfaces/get-
 import { IWithdrawInvestmentUseCase } from './usecases/withdraw-investment/interfaces/withdraw-investment.interface';
 import { IUpdateInvestmentUseCase } from './usecases/update-investment/interfaces/update-investment.interface';
 import { IDeleteInvestmentUseCase } from './usecases/delete-investment/interfaces/delete-investment.interface';
+import { Public } from '@modules/auth/decorator/public';
 
 @ApiTags('Investments')
 @Controller('investments')
@@ -52,6 +53,7 @@ export class InvestmentController {
     type: Investment,
   })
   @HttpCode(HttpStatus.OK)
+  @Public()
   async create(
     @Body() createInvestmentDto: CreateInvestmentDto,
   ): Promise<Investment> {
@@ -83,6 +85,7 @@ export class InvestmentController {
     type: ResponseInvestmentDto,
   })
   @HttpCode(HttpStatus.OK)
+  @Public()
   async findAll(
     @Query() filter: InvesmentParamsDTO,
   ): Promise<ResponseInvestmentDto> {

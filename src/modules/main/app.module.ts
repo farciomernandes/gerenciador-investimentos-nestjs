@@ -7,6 +7,7 @@ import { InvestmentModule } from '@modules/investment/investment.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSource } from '@infra/typeorm/datasource.config';
 import { WithdrawalModule } from '@modules/withdrawal/withdrawal.module';
+import { AuthModule } from '@modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { WithdrawalModule } from '@modules/withdrawal/withdrawal.module';
     }),
     HealthModule,
     MainModule,
+    AuthModule,
     UserModule,
     InvestmentModule,
     WithdrawalModule,
