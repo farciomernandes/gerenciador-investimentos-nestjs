@@ -6,6 +6,9 @@ import {
   Param,
   Query,
   Patch,
+  Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { CreateInvestmentDto } from './dtos/create-investment.dto';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -20,8 +23,9 @@ import { IGetInvestmentsUseCase } from './usecases/get-investments/interfaces/ge
 import { IGetInvestmentUseCase } from './usecases/get-investment/interfaces/get-investment.interface';
 import { IWithdrawInvestmentUseCase } from './usecases/withdraw-investment/interfaces/withdraw-investment.interface';
 import { IUpdateInvestmentUseCase } from './usecases/update-investment/interfaces/update-investment.interface';
+import { IDeleteInvestmentUseCase } from './usecases/delete-investment/interfaces/delete-investment.interface';
 
-@ApiTags('api/v1/investments')
+@ApiTags('Investments')
 @Controller('investments')
 export class InvestmentController {
   constructor(
@@ -31,6 +35,7 @@ export class InvestmentController {
     private readonly getInvestmentUseCase: IGetInvestmentUseCase,
     private readonly updateInvestmentUseCase: IUpdateInvestmentUseCase,
     private readonly withdrawInvestmentUseCase: IWithdrawInvestmentUseCase,
+    private readonly deleteInvestmentUseCase: IDeleteInvestmentUseCase,
   ) {}
 
   @Post()
@@ -46,6 +51,7 @@ export class InvestmentController {
     description: 'Created Investment',
     type: Investment,
   })
+  @HttpCode(HttpStatus.OK)
   async create(
     @Body() createInvestmentDto: CreateInvestmentDto,
   ): Promise<Investment> {
@@ -60,6 +66,7 @@ export class InvestmentController {
     description: 'Return all investments by owner id',
     type: ResponseInvestmentDto,
   })
+  @HttpCode(HttpStatus.OK)
   async findAllByOwnerId(
     @Param('owner_id') owner_id: string,
     @Query() filter: InvesmentParamsDTO,
@@ -75,6 +82,7 @@ export class InvestmentController {
     description: 'Return all investments',
     type: ResponseInvestmentDto,
   })
+  @HttpCode(HttpStatus.OK)
   async findAll(
     @Query() filter: InvesmentParamsDTO,
   ): Promise<ResponseInvestmentDto> {
@@ -98,6 +106,7 @@ export class InvestmentController {
     description: 'Updated Investment',
     type: Investment,
   })
+  @HttpCode(HttpStatus.OK)
   async update(
     @Param('id') id: string,
     @Body() updateInvestmentDto: UpdateInvestmentDto,
@@ -105,24 +114,22 @@ export class InvestmentController {
     return this.updateInvestmentUseCase.execute(updateInvestmentDto, id);
   }
 
-  @Get(':id')
-  @ApiOperation({
-    summary: 'Get an investment by id',
-  })
-  @ApiOkResponse({
-    description: 'Return an investment by id',
-    type: Investment,
-  })
-  async findOne(@Param('id') id: string): Promise<Investment | null> {
-    return this.getInvestmentUseCase.execute(id);
-  }
-
   @Patch(':id/withdraw')
   @ApiOkResponse({
     description: 'Withdrawal successful',
     type: Withdrawal,
   })
+  @HttpCode(HttpStatus.OK)
   async withdraw(@Param('id') id: string): Promise<Withdrawal> {
     return this.withdrawInvestmentUseCase.execute(id);
+  }
+
+  @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete investment by id',
+  })
+  @HttpCode(HttpStatus.OK)
+  async delete(@Param('id') id: string): Promise<void> {
+    return this.deleteInvestmentUseCase.execute(id);
   }
 }

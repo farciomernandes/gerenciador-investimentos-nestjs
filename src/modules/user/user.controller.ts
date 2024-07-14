@@ -10,7 +10,7 @@ import { UserProvider } from './providers/user.provider';
 import { CreateUserDto, UserResponseDto } from './dtos/create-user.dto';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('api/v1/users')
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(private readonly userProvider: UserProvider) {}

@@ -6,6 +6,8 @@ import {
   Param,
   Delete,
   Query,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { Withdrawal } from './entities/withdrawal.entity';
 import { CreateWithdrawalDto } from './dtos/create-withdrawal.dto';
@@ -14,7 +16,7 @@ import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { WithdrawalProvider } from './providers/wihdrawal.provider';
 import { PaginationFilter } from 'src/shared/filter/pagination.filter';
 
-@ApiTags('api/v1/withdrawals')
+@ApiTags('Withdrawals')
 @Controller('withdrawals')
 export class WithdrawalController {
   constructor(private readonly withdrawalProvider: WithdrawalProvider) {}
@@ -31,6 +33,7 @@ export class WithdrawalController {
     description: 'Created Withdrawal',
     type: Withdrawal,
   })
+  @HttpCode(HttpStatus.OK)
   async createWithdrawal(
     @Body() createWithdrawalDto: CreateWithdrawalDto,
   ): Promise<Withdrawal> {
@@ -45,22 +48,11 @@ export class WithdrawalController {
     description: 'Return all withdrawals',
     type: ListWithdrawalDto,
   })
+  @HttpCode(HttpStatus.OK)
   async getWithdrawals(
     @Query() queryParams: PaginationFilter,
   ): Promise<ListWithdrawalDto> {
     return this.withdrawalProvider.getWithdrawals(queryParams);
-  }
-
-  @Get(':id')
-  @ApiOperation({
-    summary: 'Get a withdrawal by ID',
-  })
-  @ApiOkResponse({
-    description: 'Return a withdrawal by ID',
-    type: Withdrawal,
-  })
-  async getWithdrawal(@Param('id') id: string): Promise<Withdrawal> {
-    return this.withdrawalProvider.getWithdrawal(id);
   }
 
   @Delete(':id')
@@ -70,6 +62,7 @@ export class WithdrawalController {
   @ApiOkResponse({
     description: 'Withdrawal deleted successfully',
   })
+  @HttpCode(HttpStatus.OK)
   async deleteWithdrawal(@Param('id') id: string): Promise<void> {
     await this.withdrawalProvider.deleteWithdrawal(id);
   }

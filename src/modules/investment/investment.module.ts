@@ -21,6 +21,8 @@ import { IGetInvestmentsUseCase } from './usecases/get-investments/interfaces/ge
 import { IGetInvestmentsByOwnerIdUseCase } from './usecases/get-investments-by-owner-id/interfaces/get-investments-by-owner-id.interface';
 import { IGetInvestmentsWithStatusUseCase } from './usecases/get-investments-with-status/interface/get-investments-with-status.interface';
 import { IWithdrawInvestmentUseCase } from './usecases/withdraw-investment/interfaces/withdraw-investment.interface';
+import { IDeleteInvestmentUseCase } from './usecases/delete-investment/interfaces/delete-investment.interface';
+import { DeleteInvestmentUseCase } from './usecases/delete-investment/delete-investment.usecase';
 
 @Module({
   imports: [UserModule, WithdrawalModule],
@@ -70,6 +72,10 @@ import { IWithdrawInvestmentUseCase } from './usecases/withdraw-investment/inter
     {
       provide: IWithdrawInvestmentUseCase,
       useClass: WithdrawInvestmentUseCase,
+    },
+    {
+      provide: IDeleteInvestmentUseCase,
+      useClass: DeleteInvestmentUseCase,
     },
     InvestmentProvider,
     {
