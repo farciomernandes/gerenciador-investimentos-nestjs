@@ -4,12 +4,13 @@ import { Investment } from '../../entities/investment.entity';
 import { UserRepository } from '@infra/typeorm/repositories/user.repository';
 import { InvestmentStatus } from '../../enums/investments';
 import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
-import { UpdateInvestmentUseCase } from '../update-investment/update-investment.usecase';
+import { ICreateInvestmentUseCase } from './interfaces/create-investment.interface';
+import { IUpdateInvestmentUseCase } from '../update-investment/interfaces/update-investment.interface';
 
 @Injectable()
-export class CreateInvestmentUseCase {
+export class CreateInvestmentUseCase implements ICreateInvestmentUseCase {
   constructor(
-    private readonly updateInvestmentUseCase: UpdateInvestmentUseCase,
+    private readonly updateInvestmentUseCase: IUpdateInvestmentUseCase,
     private readonly userRepository: UserRepository,
     private readonly investmentRepository: InvestmentRepository,
   ) {}

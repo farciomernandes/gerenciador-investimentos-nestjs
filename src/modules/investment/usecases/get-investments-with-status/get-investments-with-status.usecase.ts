@@ -7,9 +7,12 @@ import { InvestmentStatus } from '@modules/investment/enums/investments';
 import { FindManyOptions } from 'typeorm';
 import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
 import { Investment } from '@modules/investment/entities/investment.entity';
+import { IGetInvestmentsWithStatusUseCase } from './interface/get-investments-with-status.interface';
 
 @Injectable()
-export class GetInvestmentsWithStatusUseCase {
+export class GetInvestmentsWithStatusUseCase
+  implements IGetInvestmentsWithStatusUseCase
+{
   constructor(private readonly investmentRepository: InvestmentRepository) {}
 
   async execute(
@@ -42,13 +45,13 @@ export class GetInvestmentsWithStatusUseCase {
     );
   }
 
-  private validateStatus(status: string): void {
+  validateStatus(status: string): void {
     if (!Object.values(InvestmentStatus).includes(status as InvestmentStatus)) {
       throw new BadRequestException(`Invalid status type: ${status}.`);
     }
   }
 
-  private buildResponse(
+  buildResponse(
     investments: InvestmentDto[],
     totalPages: number,
   ): ResponseInvestmentDto {

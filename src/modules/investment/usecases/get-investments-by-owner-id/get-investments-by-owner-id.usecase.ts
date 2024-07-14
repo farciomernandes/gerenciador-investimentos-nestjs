@@ -8,9 +8,12 @@ import { Investment } from '@modules/investment/entities/investment.entity';
 import { InvestmentStatus } from '@modules/investment/enums/investments';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { FindManyOptions } from 'typeorm';
+import { IGetInvestmentsByOwnerIdUseCase } from './interfaces/get-investments-by-owner-id.interface';
 
 @Injectable()
-export class GetInvestmentsByOwnerIdUseCase {
+export class GetInvestmentsByOwnerIdUseCase
+  implements IGetInvestmentsByOwnerIdUseCase
+{
   constructor(private readonly investmentRepository: InvestmentRepository) {}
 
   async execute(
@@ -38,13 +41,13 @@ export class GetInvestmentsByOwnerIdUseCase {
     );
   }
 
-  private validateStatus(status: string): void {
+  validateStatus(status: string): void {
     if (!Object.values(InvestmentStatus).includes(status as InvestmentStatus)) {
       throw new BadRequestException(`Invalid status type: ${status}.`);
     }
   }
 
-  private buildResponse(
+  buildResponse(
     investments: InvestmentDto[],
     totalPages: number,
   ): ResponseInvestmentDto {

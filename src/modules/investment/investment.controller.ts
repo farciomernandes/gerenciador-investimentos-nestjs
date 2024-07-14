@@ -8,29 +8,29 @@ import {
   Patch,
 } from '@nestjs/common';
 import { CreateInvestmentDto } from './dtos/create-investment.dto';
-import { CreateInvestmentUseCase } from './usecases/create-investment/create-investment.usecase';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ResponseInvestmentDto } from './dtos/response-investment.dto';
 import { InvesmentParamsDTO } from './dtos/investment-params.dto';
 import { Investment } from './entities/investment.entity';
 import { UpdateInvestmentDto } from './dtos/update-investment.dto';
 import { Withdrawal } from '@modules/withdrawal/entities/withdrawal.entity';
-import { GetInvestmentsByOwnerIdUseCase } from './usecases/get-investments-by-owner-id/get-investments-by-owner-id.usecase';
-import { GetInvestmentsUseCase } from './usecases/get-investments/get-investments.usecase';
-import { GetInvestmentUseCase } from './usecases/get-investment/get-investment.usecase';
-import { UpdateInvestmentUseCase } from './usecases/update-investment/update-investment.usecase';
-import { WithdrawInvestmentUseCase } from './usecases/withdraw-investment/withdraw-investment.usecase';
+import { ICreateInvestmentUseCase } from './usecases/create-investment/interfaces/create-investment.interface';
+import { IGetInvestmentsByOwnerIdUseCase } from './usecases/get-investments-by-owner-id/interfaces/get-investments-by-owner-id.interface';
+import { IGetInvestmentsUseCase } from './usecases/get-investments/interfaces/get-investments.interface';
+import { IGetInvestmentUseCase } from './usecases/get-investment/interfaces/get-investment.interface';
+import { IWithdrawInvestmentUseCase } from './usecases/withdraw-investment/interfaces/withdraw-investment.interface';
+import { IUpdateInvestmentUseCase } from './usecases/update-investment/interfaces/update-investment.interface';
 
 @ApiTags('api/v1/investments')
 @Controller('investments')
 export class InvestmentController {
   constructor(
-    private readonly createInvestmentUseCase: CreateInvestmentUseCase,
-    private readonly getInvestmentsByOwnerIdUseCase: GetInvestmentsByOwnerIdUseCase,
-    private readonly getInvestmentsUseCase: GetInvestmentsUseCase,
-    private readonly getInvestmentUseCase: GetInvestmentUseCase,
-    private readonly updateInvestmentUseCase: UpdateInvestmentUseCase,
-    private readonly withdrawInvestmentUseCase: WithdrawInvestmentUseCase,
+    private readonly createInvestmentUseCase: ICreateInvestmentUseCase,
+    private readonly getInvestmentsByOwnerIdUseCase: IGetInvestmentsByOwnerIdUseCase,
+    private readonly getInvestmentsUseCase: IGetInvestmentsUseCase,
+    private readonly getInvestmentUseCase: IGetInvestmentUseCase,
+    private readonly updateInvestmentUseCase: IUpdateInvestmentUseCase,
+    private readonly withdrawInvestmentUseCase: IWithdrawInvestmentUseCase,
   ) {}
 
   @Post()

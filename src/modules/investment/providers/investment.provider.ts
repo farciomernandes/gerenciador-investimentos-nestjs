@@ -1,27 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { CreateInvestmentUseCase } from '../usecases/create-investment/create-investment.usecase';
-import { UpdateInvestmentUseCase } from '../usecases/update-investment/update-investment.usecase';
-import { GetInvestmentUseCase } from '../usecases/get-investment/get-investment.usecase';
-import { GetInvestmentsUseCase } from '../usecases/get-investments/get-investments.usecase';
-import { GetInvestmentsByOwnerIdUseCase } from '../usecases/get-investments-by-owner-id/get-investments-by-owner-id.usecase';
-import { GetInvestmentsWithStatusUseCase } from '../usecases/get-investments-with-status/get-investments-with-status.usecase';
-import { WithdrawInvestmentUseCase } from '../usecases/withdraw-investment/withdraw-investment.usecase';
 import { Investment } from '../entities/investment.entity';
 import { CreateInvestmentDto } from '../dtos/create-investment.dto';
 import { UpdateInvestmentDto } from '../dtos/update-investment.dto';
 import { ResponseInvestmentDto } from '../dtos/response-investment.dto';
 import { Withdrawal } from '@modules/withdrawal/entities/withdrawal.entity';
+import { ICreateInvestmentUseCase } from '../usecases/create-investment/interfaces/create-investment.interface';
+import { IUpdateInvestmentUseCase } from '../usecases/update-investment/interfaces/update-investment.interface';
+import { IGetInvestmentUseCase } from '../usecases/get-investment/interfaces/get-investment.interface';
+import { IGetInvestmentsUseCase } from '../usecases/get-investments/interfaces/get-investments.interface';
+import { IGetInvestmentsByOwnerIdUseCase } from '../usecases/get-investments-by-owner-id/interfaces/get-investments-by-owner-id.interface';
+import { IGetInvestmentsWithStatusUseCase } from '../usecases/get-investments-with-status/interface/get-investments-with-status.interface';
+import { IWithdrawInvestmentUseCase } from '../usecases/withdraw-investment/interfaces/withdraw-investment.interface';
 
 @Injectable()
 export class InvestmentProvider {
   constructor(
-    private readonly createInvestmentUseCase: CreateInvestmentUseCase,
-    private readonly updateInvestmentUseCase: UpdateInvestmentUseCase,
-    private readonly getInvestmentUseCase: GetInvestmentUseCase,
-    private readonly getInvestmentsUseCase: GetInvestmentsUseCase,
-    private readonly getInvestmentsByOwnerIdUseCase: GetInvestmentsByOwnerIdUseCase,
-    private readonly getInvestmentsWithStatusUseCase: GetInvestmentsWithStatusUseCase,
-    private readonly withdrawInvestmentUseCase: WithdrawInvestmentUseCase,
+    private readonly createInvestmentUseCase: ICreateInvestmentUseCase,
+    private readonly updateInvestmentUseCase: IUpdateInvestmentUseCase,
+    private readonly getInvestmentUseCase: IGetInvestmentUseCase,
+    private readonly getInvestmentsUseCase: IGetInvestmentsUseCase,
+    private readonly getInvestmentsByOwnerIdUseCase: IGetInvestmentsByOwnerIdUseCase,
+    private readonly getInvestmentsWithStatusUseCase: IGetInvestmentsWithStatusUseCase,
+    private readonly withdrawInvestmentUseCase: IWithdrawInvestmentUseCase,
   ) {}
 
   async create(payload: CreateInvestmentDto): Promise<Investment> {

@@ -3,9 +3,10 @@ import { Withdrawal } from '@modules/withdrawal/entities/withdrawal.entity';
 import { CreateWithdrawalDto } from '@modules/withdrawal/dtos/create-withdrawal.dto';
 import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
 import { WithdrawalProvider } from '@modules/withdrawal/providers/wihdrawal.provider';
+import { IWithdrawInvestmentUseCase } from './interfaces/withdraw-investment.interface';
 
 @Injectable()
-export class WithdrawInvestmentUseCase {
+export class WithdrawInvestmentUseCase implements IWithdrawInvestmentUseCase {
   constructor(
     private readonly investmentRepository: InvestmentRepository,
     private readonly withdrawalProvider: WithdrawalProvider,
@@ -24,7 +25,7 @@ export class WithdrawInvestmentUseCase {
     );
     const interest_rate = 0.0052;
     const current_value =
-      investment.initial_value *
+      investment.current_value *
       Math.pow(1 + interest_rate, months_since_creation);
 
     const tax_rate = this.getTaxRate(investment.creation_date);
@@ -45,7 +46,7 @@ export class WithdrawInvestmentUseCase {
     return this.withdrawalProvider.createWithdrawal(withdrawal);
   }
 
-  private getMonthsSinceCreation(createAt: Date): number {
+  getMonthsSinceCreation(createAt: Date): number {
     const today = new Date();
     const months =
       (today.getFullYear() - createAt.getFullYear()) * 12 +
@@ -54,7 +55,7 @@ export class WithdrawInvestmentUseCase {
     return months;
   }
 
-  private getTaxRate(createAt: Date): number {
+  getTaxRate(createAt: Date): number {
     const age = this.getAge(createAt);
     if (age < 1) {
       return 0.225;
@@ -65,7 +66,7 @@ export class WithdrawInvestmentUseCase {
     }
   }
 
-  private getAge(createAt: Date): number {
+  getAge(createAt: Date): number {
     const today = new Date();
     let ageInYears = today.getFullYear() - createAt.getFullYear();
     const isBeforeBirthdayThisYear =

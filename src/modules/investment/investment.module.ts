@@ -14,6 +14,13 @@ import { GetInvestmentsUseCase } from './usecases/get-investments/get-investment
 import { GetInvestmentsByOwnerIdUseCase } from './usecases/get-investments-by-owner-id/get-investments-by-owner-id.usecase';
 import { GetInvestmentsWithStatusUseCase } from './usecases/get-investments-with-status/get-investments-with-status.usecase';
 import { WithdrawInvestmentUseCase } from './usecases/withdraw-investment/withdraw-investment.usecase';
+import { ICreateInvestmentUseCase } from './usecases/create-investment/interfaces/create-investment.interface';
+import { IUpdateInvestmentUseCase } from './usecases/update-investment/interfaces/update-investment.interface';
+import { IGetInvestmentUseCase } from './usecases/get-investment/interfaces/get-investment.interface';
+import { IGetInvestmentsUseCase } from './usecases/get-investments/interfaces/get-investments.interface';
+import { IGetInvestmentsByOwnerIdUseCase } from './usecases/get-investments-by-owner-id/interfaces/get-investments-by-owner-id.interface';
+import { IGetInvestmentsWithStatusUseCase } from './usecases/get-investments-with-status/interface/get-investments-with-status.interface';
+import { IWithdrawInvestmentUseCase } from './usecases/withdraw-investment/interfaces/withdraw-investment.interface';
 
 @Module({
   imports: [UserModule, WithdrawalModule],
@@ -22,13 +29,48 @@ import { WithdrawInvestmentUseCase } from './usecases/withdraw-investment/withdr
     UserRepository,
     WithdrawalProvider,
     WithdrawalRepository,
-    CreateInvestmentUseCase,
-    UpdateInvestmentUseCase,
-    GetInvestmentUseCase,
-    GetInvestmentsUseCase,
-    GetInvestmentsByOwnerIdUseCase,
-    GetInvestmentsWithStatusUseCase,
-    WithdrawInvestmentUseCase,
+    {
+      provide: IUpdateInvestmentUseCase,
+      useFactory: (investmentRepository: InvestmentRepository) => {
+        return new UpdateInvestmentUseCase(investmentRepository);
+      },
+      inject: [InvestmentRepository],
+    },
+    {
+      provide: ICreateInvestmentUseCase,
+      useFactory: (
+        updateInvestmentUseCase: IUpdateInvestmentUseCase,
+        userRepository: UserRepository,
+        investmentRepository: InvestmentRepository,
+      ) => {
+        return new CreateInvestmentUseCase(
+          updateInvestmentUseCase,
+          userRepository,
+          investmentRepository,
+        );
+      },
+      inject: [IUpdateInvestmentUseCase, UserRepository, InvestmentRepository],
+    },
+    {
+      provide: IGetInvestmentUseCase,
+      useClass: GetInvestmentUseCase,
+    },
+    {
+      provide: IGetInvestmentsUseCase,
+      useClass: GetInvestmentsUseCase,
+    },
+    {
+      provide: IGetInvestmentsByOwnerIdUseCase,
+      useClass: GetInvestmentsByOwnerIdUseCase,
+    },
+    {
+      provide: IGetInvestmentsWithStatusUseCase,
+      useClass: GetInvestmentsWithStatusUseCase,
+    },
+    {
+      provide: IWithdrawInvestmentUseCase,
+      useClass: WithdrawInvestmentUseCase,
+    },
     InvestmentProvider,
     {
       provide: InvestmentProvider,
@@ -52,14 +94,14 @@ import { WithdrawInvestmentUseCase } from './usecases/withdraw-investment/withdr
         );
       },
       inject: [
-        CreateInvestmentUseCase,
-        UpdateInvestmentUseCase,
-        GetInvestmentUseCase,
-        GetInvestmentsUseCase,
-        GetInvestmentsByOwnerIdUseCase,
-        GetInvestmentsWithStatusUseCase,
-        GetInvestmentsWithStatusUseCase,
-        WithdrawInvestmentUseCase,
+        ICreateInvestmentUseCase,
+        IUpdateInvestmentUseCase,
+        IGetInvestmentUseCase,
+        IGetInvestmentsUseCase,
+        IGetInvestmentsByOwnerIdUseCase,
+        IGetInvestmentsWithStatusUseCase,
+        IGetInvestmentsWithStatusUseCase,
+        IWithdrawInvestmentUseCase,
       ],
     },
   ],

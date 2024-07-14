@@ -7,9 +7,10 @@ import { Investment } from '@modules/investment/entities/investment.entity';
 import { InvestmentStatus } from '@modules/investment/enums/investments';
 import { Injectable } from '@nestjs/common';
 import { FindManyOptions } from 'typeorm';
+import { IGetInvestmentsUseCase } from './interfaces/get-investments.interface';
 
 @Injectable()
-export class GetInvestmentsUseCase {
+export class GetInvestmentsUseCase implements IGetInvestmentsUseCase {
   constructor(private readonly investmentRepository: InvestmentRepository) {}
 
   async execute(
@@ -39,7 +40,7 @@ export class GetInvestmentsUseCase {
     );
   }
 
-  private buildResponse(
+  buildResponse(
     investments: InvestmentDto[],
     totalPages: number,
   ): ResponseInvestmentDto {

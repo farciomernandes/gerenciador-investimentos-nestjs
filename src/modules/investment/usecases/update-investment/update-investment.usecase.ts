@@ -2,9 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { Investment } from '../../entities/investment.entity';
 import { UpdateInvestmentDto } from '../../dtos/update-investment.dto';
 import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
+import { IUpdateInvestmentUseCase } from './interfaces/update-investment.interface';
 
 @Injectable()
-export class UpdateInvestmentUseCase {
+export class UpdateInvestmentUseCase implements IUpdateInvestmentUseCase {
   constructor(private readonly investmentRepository: InvestmentRepository) {}
 
   async execute(payload: UpdateInvestmentDto, id: string): Promise<Investment> {
@@ -31,7 +32,7 @@ export class UpdateInvestmentUseCase {
     return this.investmentRepository.save(investment);
   }
 
-  private calculateUpdatedValue(
+  calculateUpdatedValue(
     investment: Investment,
     payload: UpdateInvestmentDto,
   ): number {
