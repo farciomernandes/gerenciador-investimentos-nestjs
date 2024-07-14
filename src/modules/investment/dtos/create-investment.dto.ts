@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsNotEmpty, IsDateString, IsNumber, Min } from 'class-validator';
 import { InvestmentStatus } from '../enums/investments';
 
@@ -30,5 +30,48 @@ export class CreateInvestmentDto {
 
   current_value: number;
 
+  status: InvestmentStatus;
+}
+
+export class CreatedInvestment extends PickType(CreateInvestmentDto, [
+  'name',
+  'creation_date',
+  'initial_value',
+  'current_value',
+  'status',
+] as const) {
+  @ApiProperty({
+    description: 'The date when the investment was created',
+    example: '2024-07-14T16:05:51.755Z',
+  })
+  @IsNotEmpty()
+  created_at: Date;
+
+  @ApiProperty({
+    description: 'The date when the investment was last updated',
+    example: '2024-07-14T16:26:37.893Z',
+  })
+  @IsNotEmpty()
+  updated_at: Date;
+
+  @ApiProperty({
+    description: 'The ID of the investment',
+    example: '5ae8bfe0-f924-42c4-adbd-5336690dc3bf',
+  })
+  @IsNotEmpty()
+  id: string;
+
+  @ApiProperty({
+    description: 'The current value of the investment',
+    example: 2000,
+  })
+  @IsNotEmpty()
+  current_value: number;
+
+  @ApiProperty({
+    description: 'The status of the investment',
+    example: InvestmentStatus.IN_PROGRESS,
+  })
+  @IsNotEmpty()
   status: InvestmentStatus;
 }

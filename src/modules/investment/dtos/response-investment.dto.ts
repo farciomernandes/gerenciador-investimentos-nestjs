@@ -29,7 +29,7 @@ export class UserWithoutPassword {
 
 export class InvestmentDto extends CreateInvestmentDto {
   @ApiProperty({
-    description: 'The ID of the owner',
+    description: 'The ID of the investment',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @IsNotEmpty()
@@ -81,6 +81,34 @@ export class ResponseInvestmentDto {
     description: 'List of investments',
     type: [InvestmentDto],
     isArray: true,
+    example: [
+      {
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        name: 'Investment 1',
+        currentValue: 1000,
+        initialValue: 500,
+        ownerId: '123e4567-e89b-12d3-a456-426614174000',
+        status: InvestmentStatus.IN_PROGRESS,
+        owner: {
+          id: '123e4567-e89b-12d3-a456-426614174000',
+          name: 'John Doe',
+          email: 'john.doe@example.com',
+        },
+      },
+      {
+        id: '234e5678-f90g-12h3-i456-426614174000',
+        name: 'Investment 2',
+        currentValue: 2000,
+        initialValue: 1000,
+        ownerId: '234e5678-f90g-12h3-i456-426614174000',
+        status: InvestmentStatus.ACTIVE,
+        owner: {
+          id: '234e5678-f90g-12h3-i456-426614174000',
+          name: 'Jane Doe',
+          email: 'jane.doe@example.com',
+        },
+      },
+    ],
   })
   @IsNotEmpty()
   investments: InvestmentDto[];

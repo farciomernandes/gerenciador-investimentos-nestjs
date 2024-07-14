@@ -11,7 +11,10 @@ import {
   Request,
   HttpStatus,
 } from '@nestjs/common';
-import { CreateInvestmentDto } from './dtos/create-investment.dto';
+import {
+  CreatedInvestment,
+  CreateInvestmentDto,
+} from './dtos/create-investment.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -31,6 +34,7 @@ import { IWithdrawInvestmentUseCase } from './usecases/withdraw-investment/inter
 import { IUpdateInvestmentUseCase } from './usecases/update-investment/interfaces/update-investment.interface';
 import { IDeleteInvestmentUseCase } from './usecases/delete-investment/interfaces/delete-investment.interface';
 import { Request as expressRequest } from 'express';
+import { ResponseInvesvmentWithdrawDto } from '@modules/withdrawal/dtos/response-withdraw.dto';
 
 @ApiTags('Investments')
 @Controller('investments')
@@ -55,7 +59,7 @@ export class InvestmentController {
   })
   @ApiOkResponse({
     description: 'Created Investment',
-    type: Investment,
+    type: CreatedInvestment,
   })
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
@@ -114,7 +118,7 @@ export class InvestmentController {
   })
   @ApiOkResponse({
     description: 'Updated Investment',
-    type: Investment,
+    type: CreatedInvestment,
   })
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
@@ -128,7 +132,7 @@ export class InvestmentController {
   @Patch(':id/withdraw')
   @ApiOkResponse({
     description: 'Withdrawal successful',
-    type: Withdrawal,
+    type: ResponseInvesvmentWithdrawDto,
   })
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()

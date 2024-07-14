@@ -21,6 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { WithdrawalProvider } from './providers/wihdrawal.provider';
 import { PaginationFilter } from 'src/shared/filter/pagination.filter';
+import { ResponseInvesvmentWithdrawDto } from './dtos/response-withdraw.dto';
 
 @ApiTags('Withdrawals')
 @Controller('withdrawals')
@@ -43,7 +44,7 @@ export class WithdrawalController {
   @ApiBearerAuth()
   async createWithdrawal(
     @Body() createWithdrawalDto: CreateWithdrawalDto,
-  ): Promise<Withdrawal> {
+  ): Promise<ResponseInvesvmentWithdrawDto> {
     return this.withdrawalProvider.createWithdrawal(createWithdrawalDto);
   }
 
