@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class WithdrawalResponse {
+export class TransactionResponse {
   @ApiProperty({
-    description: 'Withdrawal id',
+    description: 'Transaction id',
     type: String,
   })
   id: string;
@@ -14,37 +14,43 @@ export class WithdrawalResponse {
   investment_id: string;
 
   @ApiProperty({
-    description: 'Withdrawal date',
+    description: 'Transaction date',
     type: Date,
   })
-  withdrawal_date: Date;
+  transaction_date: Date;
 
   @ApiProperty({
-    description: 'List amount withdrawals',
-    type: String,
+    description: 'Amount',
+    type: Number,
   })
   amount: number;
 
   @ApiProperty({
-    description: 'List of withdrawals',
+    description: 'Type (INPUT or OUTPUT)',
+    type: String,
+  })
+  type: string;
+
+  @ApiProperty({
+    description: 'Tax',
     type: Number,
   })
   tax: number;
 
   @ApiProperty({
-    description: 'List of withdrawals',
+    description: 'Net amount',
     type: Number,
   })
   net_amount: number;
 }
 
-export class ListWithdrawalDto {
+export class ListTransactionDto {
   @ApiProperty({
-    description: 'List of withdrawals',
-    type: WithdrawalResponse,
+    description: 'List of transactions',
+    type: TransactionResponse,
     isArray: true,
   })
-  withdrawals: WithdrawalResponse[];
+  transactions: TransactionResponse[];
 
   @ApiProperty({
     description: 'Total pages',

@@ -6,8 +6,4 @@ export abstract class IUpdateInvestmentUseCase {
     payload: UpdateInvestmentDto,
     id: string,
   ): Promise<Investment>;
-  abstract calculateUpdatedValue(
-    investment: Investment,
-    payload: UpdateInvestmentDto,
-  ): number;
 }

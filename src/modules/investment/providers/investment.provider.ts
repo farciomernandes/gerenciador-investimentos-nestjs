@@ -1,16 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { Investment } from '../entities/investment.entity';
 import { CreateInvestmentDto } from '../dtos/create-investment.dto';
-import { UpdateInvestmentDto } from '../dtos/update-investment.dto';
+import {
+  UpdateInvestmentDto,
+  TransactionInvestmentDto,
+} from '../dtos/update-investment.dto';
 import { ResponseInvestmentDto } from '../dtos/response-investment.dto';
-import { Withdrawal } from '@modules/withdrawal/entities/withdrawal.entity';
+import { Transaction } from '@modules/transaction/entities/transaction.entity';
 import { ICreateInvestmentUseCase } from '../usecases/create-investment/interfaces/create-investment.interface';
 import { IUpdateInvestmentUseCase } from '../usecases/update-investment/interfaces/update-investment.interface';
 import { IGetInvestmentUseCase } from '../usecases/get-investment/interfaces/get-investment.interface';
 import { IGetInvestmentsUseCase } from '../usecases/get-investments/interfaces/get-investments.interface';
 import { IGetInvestmentsByOwnerIdUseCase } from '../usecases/get-investments-by-owner-id/interfaces/get-investments-by-owner-id.interface';
 import { IGetInvestmentsWithStatusUseCase } from '../usecases/get-investments-with-status/interface/get-investments-with-status.interface';
-import { IWithdrawInvestmentUseCase } from '../usecases/withdraw-investment/interfaces/withdraw-investment.interface';
+import { ITransactionInvestmentUseCase } from '../usecases/transaction-investment/interfaces/transaction-investment.interface';
+import { IGetInvestmentDetailsUseCase } from '../usecases/get-investment-details/interface/get-investment-details.interface';
 
 @Injectable()
 export class InvestmentProvider {
@@ -21,8 +25,13 @@ export class InvestmentProvider {
     private readonly getInvestmentsUseCase: IGetInvestmentsUseCase,
     private readonly getInvestmentsByOwnerIdUseCase: IGetInvestmentsByOwnerIdUseCase,
     private readonly getInvestmentsWithStatusUseCase: IGetInvestmentsWithStatusUseCase,
-    private readonly withdrawInvestmentUseCase: IWithdrawInvestmentUseCase,
+    private readonly transactionInvestmentUseCase: ITransactionInvestmentUseCase,
+    private readonly getInvestmentDetailsUseCase: IGetInvestmentDetailsUseCase,
   ) {}
+
+  async getDetails(investment_id: string): Promise<any> {
+    return this.getInvestmentDetailsUseCase.execute(investment_id);
+  }
 
   async create(payload: CreateInvestmentDto): Promise<Investment> {
     return this.createInvestmentUseCase.execute(payload);
@@ -62,7 +71,10 @@ export class InvestmentProvider {
     return this.getInvestmentsWithStatusUseCase.execute(page, limit, status);
   }
 
-  async withdraw(id: string): Promise<Withdrawal> {
-    return this.withdrawInvestmentUseCase.execute(id);
+  async transaction(
+    id: string,
+    transactionValue: TransactionInvestmentDto,
+  ): Promise<Transaction> {
+    return this.transactionInvestmentUseCase.execute(id, transactionValue);
   }
 }

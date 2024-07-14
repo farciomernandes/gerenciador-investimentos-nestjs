@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdateWithdrawalDto {
+export class UpdateTransactionDto {
   @ApiProperty({
     description: 'Investment ID',
     type: String,
@@ -8,10 +8,10 @@ export class UpdateWithdrawalDto {
   investment_id?: string;
 
   @ApiProperty({
-    description: 'Withdrawal date',
+    description: 'Transaction date',
     type: Date,
   })
-  withdrawal_date?: Date;
+  transaction_date?: Date;
 
   @ApiProperty({
     description: 'Amount',
@@ -20,9 +20,11 @@ export class UpdateWithdrawalDto {
   amount?: number;
 
   @ApiProperty({
-    description: 'Tax',
-    type: Number,
+    description: 'Type (INPUT or OUTPUT)',
+    type: String,
   })
+  type?: string;
+
   tax?: number;
 
   @ApiProperty({

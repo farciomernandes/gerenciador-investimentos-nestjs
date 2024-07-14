@@ -7,7 +7,7 @@ import {
   IsUUID,
 } from 'class-validator';
 
-export class ResponseInvesvmentWithdrawDto {
+export class ResponseInvestmentTransactionDto {
   @ApiProperty({
     description: 'The ID of the investment',
     example: '5ae8bfe0-f924-42c4-adbd-5336690dc3bf',
@@ -17,15 +17,15 @@ export class ResponseInvesvmentWithdrawDto {
   investment_id: string;
 
   @ApiProperty({
-    description: 'The date of the withdrawal',
+    description: 'The date of the transaction',
     example: '2024-07-14T16:30:33.870Z',
   })
   @IsNotEmpty()
   @IsDate()
-  withdrawal_date: Date;
+  transaction_date: Date;
 
   @ApiProperty({
-    description: 'The amount withdrawn',
+    description: 'The amount of the transaction',
     example: 3192.6478161436767,
   })
   @IsNotEmpty()
@@ -33,7 +33,14 @@ export class ResponseInvesvmentWithdrawDto {
   amount: number;
 
   @ApiProperty({
-    description: 'The tax applied to the withdrawal',
+    description: 'The type of the transaction (INPUT or OUTPUT)',
+    example: 'INPUT',
+  })
+  @IsNotEmpty()
+  type: string;
+
+  @ApiProperty({
+    description: 'The tax applied to the transaction',
     example: 590.6398459865802,
   })
   @IsNotEmpty()
@@ -49,7 +56,7 @@ export class ResponseInvesvmentWithdrawDto {
   net_amount: number;
 
   @ApiProperty({
-    description: 'The date when the withdrawal record was created',
+    description: 'The date when the transaction record was created',
     example: '2024-07-14T16:30:33.873Z',
   })
   @IsNotEmpty()
@@ -57,7 +64,7 @@ export class ResponseInvesvmentWithdrawDto {
   created_at: Date;
 
   @ApiProperty({
-    description: 'The date when the withdrawal record was last updated',
+    description: 'The date when the transaction record was last updated',
     example: '2024-07-14T16:30:33.873Z',
   })
   @IsNotEmpty()
@@ -65,7 +72,7 @@ export class ResponseInvesvmentWithdrawDto {
   updated_at: Date;
 
   @ApiProperty({
-    description: 'The date when the withdrawal record was deleted',
+    description: 'The date when the transaction record was deleted',
     example: null,
   })
   @IsOptional()
@@ -73,7 +80,7 @@ export class ResponseInvesvmentWithdrawDto {
   deleted_at: Date | null;
 
   @ApiProperty({
-    description: 'The ID of the withdrawal record',
+    description: 'The ID of the transaction record',
     example: '8d2f300f-4731-4598-bbce-3c6e9e9cc50f',
   })
   @IsNotEmpty()

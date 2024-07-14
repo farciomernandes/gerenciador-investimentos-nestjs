@@ -25,16 +25,20 @@ import {
 import { ResponseInvestmentDto } from './dtos/response-investment.dto';
 import { InvesmentParamsDTO } from './dtos/investment-params.dto';
 import { Investment } from './entities/investment.entity';
-import { UpdateInvestmentDto } from './dtos/update-investment.dto';
-import { Withdrawal } from '@modules/withdrawal/entities/withdrawal.entity';
+import {
+  TransactionInvestmentDto,
+  UpdateInvestmentDto,
+} from './dtos/update-investment.dto';
 import { ICreateInvestmentUseCase } from './usecases/create-investment/interfaces/create-investment.interface';
 import { IGetInvestmentsByOwnerIdUseCase } from './usecases/get-investments-by-owner-id/interfaces/get-investments-by-owner-id.interface';
 import { IGetInvestmentsUseCase } from './usecases/get-investments/interfaces/get-investments.interface';
-import { IWithdrawInvestmentUseCase } from './usecases/withdraw-investment/interfaces/withdraw-investment.interface';
+import { ITransactionInvestmentUseCase } from './usecases/transaction-investment/interfaces/transaction-investment.interface';
 import { IUpdateInvestmentUseCase } from './usecases/update-investment/interfaces/update-investment.interface';
 import { IDeleteInvestmentUseCase } from './usecases/delete-investment/interfaces/delete-investment.interface';
 import { Request as expressRequest } from 'express';
-import { ResponseInvesvmentWithdrawDto } from '@modules/withdrawal/dtos/response-withdraw.dto';
+import { ResponseInvestmentTransactionDto } from '@modules/transaction/dtos/response-transaction.dto';
+import { IGetInvestmentDetailsUseCase } from './usecases/get-investment-details/interface/get-investment-details.interface';
+import { ResponseInvestmentDetails } from './dtos/response-investment-details.dto';
 
 @ApiTags('Investments')
 @Controller('investments')
@@ -44,8 +48,9 @@ export class InvestmentController {
     private readonly getInvestmentsByOwnerIdUseCase: IGetInvestmentsByOwnerIdUseCase,
     private readonly getInvestmentsUseCase: IGetInvestmentsUseCase,
     private readonly updateInvestmentUseCase: IUpdateInvestmentUseCase,
-    private readonly withdrawInvestmentUseCase: IWithdrawInvestmentUseCase,
+    private readonly transactionInvestmentUseCase: ITransactionInvestmentUseCase,
     private readonly deleteInvestmentUseCase: IDeleteInvestmentUseCase,
+    private readonly getInvestmentDetailsUseCase: IGetInvestmentDetailsUseCase,
   ) {}
 
   @Post()
@@ -111,6 +116,20 @@ export class InvestmentController {
     }
   }
 
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Get details to investment',
+  })
+  @ApiOkResponse({
+    description: 'Return details to investment',
+    type: ResponseInvestmentDetails,
+  })
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  async getInvestmentDetails(@Param('id') investment_id: string) {
+    return this.getInvestmentDetailsUseCase.execute(investment_id);
+  }
+
   @Patch(':id')
   @ApiBody({
     type: UpdateInvestmentDto,
@@ -129,15 +148,21 @@ export class InvestmentController {
     return this.updateInvestmentUseCase.execute(updateInvestmentDto, id);
   }
 
-  @Patch(':id/withdraw')
+  @Patch(':id/transaction')
+  @ApiBody({
+    type: TransactionInvestmentDto,
+  })
   @ApiOkResponse({
-    description: 'Withdrawal successful',
-    type: ResponseInvesvmentWithdrawDto,
+    description: 'Transaction successful',
+    type: ResponseInvestmentTransactionDto,
   })
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
-  async withdraw(@Param('id') id: string): Promise<Withdrawal> {
-    return this.withdrawInvestmentUseCase.execute(id);
+  async transaction(
+    @Param('id') id: string,
+    @Body() payload: TransactionInvestmentDto,
+  ): Promise<any> {
+    return this.transactionInvestmentUseCase.execute(id, payload);
   }
 
   @Delete(':id')
