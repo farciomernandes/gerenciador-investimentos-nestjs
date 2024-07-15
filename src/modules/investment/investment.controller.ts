@@ -10,6 +10,7 @@ import {
   Request,
   HttpStatus,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateInvestmentDto } from './dtos/create-investment.dto';
 import {
@@ -32,10 +33,12 @@ import { IGetInvestmentDetailsUseCase } from './usecases/get-investment-details/
 import { ResponseInvestmentDetails } from './dtos/response-investment-details.dto';
 import { TransactionTypes } from '@modules/transaction/enums/transaction';
 import { CacheInterceptor } from '@nestjs/cache-manager';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 @ApiTags('Investments')
 @Controller('investments')
 @UseInterceptors(CacheInterceptor)
+@UseGuards(ThrottlerGuard)
 export class InvestmentController {
   constructor(
     private readonly createInvestmentUseCase: ICreateInvestmentUseCase,
@@ -77,6 +80,7 @@ export class InvestmentController {
     type: ResponseInvestmentDto,
   })
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   async findAllByOwnerId(
     @Param('owner_id') owner_id: string,
     @Query() filter: InvesmentParamsDTO,
@@ -94,6 +98,7 @@ export class InvestmentController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   async findAll(
     @Query() filter: InvesmentParamsDTO,
   ): Promise<ResponseInvestmentDto> {
@@ -118,6 +123,7 @@ export class InvestmentController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   async getInvestmentDetails(@Param('id') investment_id: string) {
     return this.getInvestmentDetailsUseCase.execute(investment_id);
   }
