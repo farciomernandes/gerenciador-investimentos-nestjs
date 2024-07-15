@@ -1,4 +1,3 @@
-import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
 import { InvesmentParamsDTO } from '@modules/investment/dtos/investment-params.dto';
 import {
   InvestmentDto,
@@ -9,12 +8,15 @@ import { InvestmentStatus } from '@modules/investment/enums/investments';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { FindManyOptions } from 'typeorm';
 import { IGetInvestmentsByOwnerIdUseCase } from './interfaces/get-investments-by-owner-id.interface';
+import { InvestmentRepositoryInterface } from '@modules/investment/mocks/investment.respository.interface';
 
 @Injectable()
 export class GetInvestmentsByOwnerIdUseCase
   implements IGetInvestmentsByOwnerIdUseCase
 {
-  constructor(private readonly investmentRepository: InvestmentRepository) {}
+  constructor(
+    private readonly investmentRepository: InvestmentRepositoryInterface,
+  ) {}
 
   async execute(
     ownerId: string,

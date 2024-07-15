@@ -96,7 +96,10 @@ import { InvestmentRepositoryInterface } from './mocks/investment.respository.in
     },
     {
       provide: IGetInvestmentsByOwnerIdUseCase,
-      useClass: GetInvestmentsByOwnerIdUseCase,
+      useFactory: (investmentRepository: InvestmentRepositoryInterface) => {
+        return new GetInvestmentsByOwnerIdUseCase(investmentRepository);
+      },
+      inject: [InvestmentRepository],
     },
     {
       provide: IGetInvestmentsWithStatusUseCase,
