@@ -1,3 +1,4 @@
+import { FindManyOptions } from 'typeorm';
 import { Investment } from '../entities/investment.entity';
 
 export abstract class InvestmentRepositoryInterface {
@@ -8,4 +9,7 @@ export abstract class InvestmentRepositoryInterface {
   abstract getWithTransactions(name: string, owner_id: string): Promise<any>;
   abstract getWithTransactionsById(id: string): Promise<any>;
   abstract findOne(options: any): Promise<any | null>;
+  abstract findAndCount(
+    options: FindManyOptions<Investment>,
+  ): Promise<[Investment[], number]>;
 }

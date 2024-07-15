@@ -4,6 +4,7 @@ import { InvestmentRepositoryInterface } from './investment.respository.interfac
 import { InvestmentStatus } from '../enums/investments';
 import { makeFakeUser } from '@modules/auth/mocks/user.repository.mock';
 import { makeTransactionMock } from '@modules/transaction/mocks/transaction.repository.mock';
+import { FindManyOptions } from 'typeorm';
 
 export const makeInvestmentMock = (): Investment => ({
   id: 'valid-id',
@@ -59,14 +60,25 @@ const makeFakeInvestmentWithTransaction = () => ({
 export const makeInvestmentRepositoryStub =
   (): InvestmentRepositoryInterface => {
     class InvestmentRepositoryStub implements InvestmentRepositoryInterface {
+      async findAndCount(
+        options: FindManyOptions<Investment>,
+      ): Promise<[Investment[], number]> {
+        const investments = [makeInvestmentMock(), makeInvestmentMock()];
+        return Promise.resolve([investments, investments.length]);
+      }
+
+      async getWithTransactionsById(id: string): Promise<any> {
+        if (id === 'valid-id') {
+          return Promise.resolve(makeFakeInvestmentWithTransaction());
+        } else {
+          return Promise.resolve(null);
+        }
+      }
       async findOne(options: any): Promise<any | null> {
         return Promise.resolve(makeInvestmentMock());
       }
       async getWithTransactions(name: string, owner_id: string): Promise<any> {
         return Promise.resolve(makeFakeInvestmentWithTransaction());
-      }
-      async getWithTransactionsById(id: string): Promise<any> {
-        throw new Error('Method not implemented.');
       }
       async findOneOrFail(_where: any): Promise<Investment> {
         return Promise.resolve(makeInvestmentMock());

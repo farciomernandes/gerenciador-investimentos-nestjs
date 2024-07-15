@@ -1,4 +1,3 @@
-import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
 import {
   InvestmentDto,
   ResponseInvestmentDto,
@@ -8,31 +7,32 @@ import { InvestmentStatus } from '@modules/investment/enums/investments';
 import { Injectable } from '@nestjs/common';
 import { FindManyOptions } from 'typeorm';
 import { IGetInvestmentsUseCase } from './interfaces/get-investments.interface';
+import { InvestmentRepositoryInterface } from '@modules/investment/mocks/investment.respository.interface';
 
 @Injectable()
 export class GetInvestmentsUseCase implements IGetInvestmentsUseCase {
-  constructor(private readonly investmentRepository: InvestmentRepository) {}
+  constructor(
+    private readonly investmentRepository: InvestmentRepositoryInterface,
+  ) {}
 
   async execute(
     page: number = 1,
     limit: number = 10,
     status?: string,
   ): Promise<ResponseInvestmentDto> {
-    let query: FindManyOptions<Investment> | undefined = {
+    let query: FindManyOptions<Investment> = {
       relations: ['owner'],
       skip: (page - 1) * limit,
       take: limit,
     };
 
     if (status) {
-      query = {
-        ...query,
-        where: { status: InvestmentStatus[status] },
-      };
+      query.where = { status: InvestmentStatus[status] };
     }
 
     const [investments, total] =
       await this.investmentRepository.findAndCount(query);
+
     const totalPages = Math.ceil(total / limit);
     return this.buildResponse(
       investments.map((investment) => InvestmentDto.toDto(investment)),
