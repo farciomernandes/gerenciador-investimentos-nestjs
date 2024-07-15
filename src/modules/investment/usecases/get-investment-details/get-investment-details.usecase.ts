@@ -7,7 +7,7 @@ import { IGetInvestmentDetailsUseCase } from './interface/get-investment-details
 import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
 import { Transaction } from '@modules/transaction/entities/transaction.entity';
 import { ResponseInvestmentDetails } from '@modules/investment/dtos/response-investment-details.dto';
-import { TransactionRepositoryInterface } from '@infra/typeorm/repositories/transaction.respository.interface';
+import { TransactionRepositoryInterface } from '@modules/transaction/mocks/transaction.respository.interface';
 
 @Injectable()
 export class GetInvestmentDetailsUseCase

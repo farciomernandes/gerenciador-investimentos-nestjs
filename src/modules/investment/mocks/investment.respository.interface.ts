@@ -5,4 +5,6 @@ export abstract class InvestmentRepositoryInterface {
   abstract create(investment: Partial<Investment>): Investment;
   abstract save(investment: Investment): Promise<Investment>;
   abstract find(options: any): Promise<Investment[]>;
+  abstract getWithTransactions(name: string, owner_id: string): Promise<any>;
+  abstract getWithTransactionsById(id: string): Promise<any>;
 }

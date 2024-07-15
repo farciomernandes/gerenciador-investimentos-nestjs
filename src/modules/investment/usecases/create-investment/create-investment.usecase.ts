@@ -1,8 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateInvestmentDto } from '../../dtos/create-investment.dto';
-import { UserRepository } from '@infra/typeorm/repositories/user.repository';
 import { InvestmentStatus } from '../../enums/investments';
-import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
 import { ICreateInvestmentUseCase } from './interfaces/create-investment.interface';
 import { Investment } from '@modules/investment/entities/investment.entity';
 import {
@@ -13,13 +11,15 @@ import { ResponseInvestmentDetails } from '@modules/investment/dtos/response-inv
 import { TransactionTypes } from '@modules/transaction/enums/transaction';
 import { User } from '@modules/user/entities/users.entity';
 import { Transaction } from '@modules/transaction/entities/transaction.entity';
-import { TransactionRepositoryInterface } from '@infra/typeorm/repositories/transaction.respository.interface';
+import { TransactionRepositoryInterface } from '@modules/transaction/mocks/transaction.respository.interface';
+import { UserRepositoryInterface } from '@modules/auth/mocks/user.repository.interface';
+import { InvestmentRepositoryInterface } from '@modules/investment/mocks/investment.respository.interface';
 
 @Injectable()
 export class CreateInvestmentUseCase implements ICreateInvestmentUseCase {
   constructor(
-    private readonly userRepository: UserRepository,
-    private readonly investmentRepository: InvestmentRepository,
+    private readonly userRepository: UserRepositoryInterface,
+    private readonly investmentRepository: InvestmentRepositoryInterface,
     private readonly transactionRepository: TransactionRepositoryInterface,
   ) {}
 
@@ -36,6 +36,7 @@ export class CreateInvestmentUseCase implements ICreateInvestmentUseCase {
         createInvestmentDto.name,
         createInvestmentDto.owner_id,
       );
+
     if (investmentAlreadyExists) {
       throw new BadRequestException(
         `Investimento com ${createInvestmentDto.name} nome já existe, tente realizar uma transação!`,

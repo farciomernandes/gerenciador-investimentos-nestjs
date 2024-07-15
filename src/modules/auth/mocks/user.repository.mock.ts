@@ -18,6 +18,9 @@ export const makeUserRepositoryStub = (): UserRepositoryInterface => {
         password: 'any_password',
       });
     }
+    findOneOrFail(options: any): Promise<any> {
+      return Promise.resolve(makeFakeUser());
+    }
     findOne(_where: any): Promise<any> {
       return Promise.resolve(makeFakeUser());
     }
@@ -42,8 +45,13 @@ export const makeLoginDto = (): LoginDto => ({
   password: 'any_password',
 });
 
-export const makeFakeUser = (): any => ({
+export const makeFakeUser = (): User => ({
   id: 'any_id',
   email: 'any_email@mail.com',
   password: 'hashed_password',
+  investments: [],
+  name: 'valid_name',
+  created_at: new Date(Date.now()),
+  updated_at: new Date(Date.now()),
+  deleted_at: new Date(Date.now()),
 });

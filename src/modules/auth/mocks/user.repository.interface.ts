@@ -5,4 +5,5 @@ export abstract class UserRepositoryInterface {
   abstract create(user: Partial<User>): User;
   abstract save(user: User): Promise<User>;
   abstract find(options: any): Promise<User[]>;
+  abstract findOneOrFail(options: any): Promise<any>;
 }
