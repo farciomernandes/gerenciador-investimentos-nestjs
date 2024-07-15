@@ -54,8 +54,7 @@ export class InvestmentController {
   })
   @ApiBody({
     type: CreateInvestmentDto,
-    description:
-      'Payload para criar um investimento ou atualizar o valor se o investimento já existir.',
+    description: 'Payload para criar um investimento.',
   })
   @ApiOkResponse({
     description: 'Investimento criado',
