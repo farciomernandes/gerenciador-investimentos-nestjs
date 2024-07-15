@@ -6,9 +6,11 @@ import {
   ManyToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 import { InvestmentStatus } from '../enums/investments';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { Transaction } from '@modules/transaction/entities/transaction.entity';
 
 @Entity('investments')
 export class Investment extends BaseORMEntity {
@@ -18,6 +20,12 @@ export class Investment extends BaseORMEntity {
   @ManyToOne(() => User, (user) => user.investments)
   @JoinColumn({ name: 'owner_id' })
   owner: User;
+
+  @Column()
+  owner_id: string;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.investment)
+  transactions: Transaction[];
 
   @Column({ type: 'varchar', nullable: true })
   @IsNotEmpty({ message: 'O campo nome é obrigatório' })

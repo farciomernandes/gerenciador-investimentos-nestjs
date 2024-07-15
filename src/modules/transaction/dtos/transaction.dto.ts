@@ -20,7 +20,7 @@ export class TransactionDto {
   transaction_date: Date;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     example: 2399,
   })
   amount: number;
@@ -38,7 +38,7 @@ export class TransactionDto {
   tax: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     example: 235,
   })
   net_amount: number;

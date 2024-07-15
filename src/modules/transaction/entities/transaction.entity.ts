@@ -1,14 +1,25 @@
 import { BaseORMEntity } from '@infra/typeorm/shared/entities/base-orm.entity';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { TransactionTypes } from '../enums/transaction';
+import { Investment } from '@modules/investment/entities/investment.entity';
 
 @Entity({ name: 'transactions' })
 export class Transaction extends BaseORMEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'uuid' })
+  @Column()
   investment_id: string;
+
+  @ManyToOne(() => Investment, (investment) => investment.id)
+  @JoinColumn({ name: 'investment_id' })
+  investment: Investment;
 
   @Column({ type: 'timestamp with time zone' })
   transaction_date: Date;

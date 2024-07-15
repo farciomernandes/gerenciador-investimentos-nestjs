@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   ListTransactionDto,
   TransactionResponse,
@@ -16,16 +16,37 @@ export class TransactionProvider {
   ) {}
 
   async createTransaction(payload: any): Promise<any> {
-    const transaction = this.transactionRepository.create(payload);
+    let taxRate = payload.tax ? payload.tax : 0;
+    let taxAmount = payload.tax ? payload.tax : 0;
+    let netAmount = payload.net_amount ? payload.net_amount : 0;
+
     const investment = await this.investmentRepository.findOneOrFail({
       where: { id: payload.investment_id },
     });
 
     if (payload.type === 'INPUT') {
-      investment.current_value += payload.amount;
+      taxRate = this.getTaxRate(new Date(payload.transaction_date));
+      taxAmount = payload.amount * taxRate;
+      netAmount = payload.amount - taxAmount;
+      investment.current_value =
+        Number(payload.amount) + Number(investment.current_value);
     } else {
-      investment.current_value -= payload.amount;
+      const amount = Number(investment.current_value) - Number(payload.amount);
+
+      if (amount < 0) {
+        throw new BadRequestException(
+          'O valor da retirada não pode ser maior que o valor atual do investimento',
+        );
+      }
+      investment.current_value = amount;
     }
+
+    const transaction = this.transactionRepository.create({
+      ...payload,
+      tax: taxRate,
+      tax_amount: taxAmount,
+      net_amount: netAmount,
+    });
 
     await this.investmentRepository.save(investment);
     return await this.transactionRepository.save(transaction);
@@ -87,9 +108,5 @@ export class TransactionProvider {
     const ageInMilliseconds = today.getTime() - transactionDate.getTime();
     const ageInYears = ageInMilliseconds / (1000 * 3600 * 24 * 365);
     return ageInYears;
-  }
-
-  async deleteTransaction(id: string): Promise<void> {
-    await this.transactionRepository.delete(id);
   }
 }

@@ -1,3 +1,4 @@
+import { TransactionTypes } from '@modules/transaction/enums/transaction';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
@@ -15,7 +16,7 @@ export class UpdateInvestmentDto {
     example: 'output',
   })
   @IsNotEmpty()
-  type: 'input' | 'output';
+  type: TransactionTypes.INPUT | TransactionTypes.OUTPUT;
 }
 
 export class TransactionInvestmentDto {

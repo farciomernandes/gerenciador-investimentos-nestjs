@@ -1,3 +1,5 @@
+import { differenceInMonths, differenceInYears } from 'date-fns';
+
 export const INVESTMENT_RETURN_RATE = 0.0052; // 0,52%
 
 export const TAX_RATES = {
@@ -12,20 +14,16 @@ export class InvestmentCalculations {
     interestRate: number,
     months: number,
   ): number {
-    return currentValue * Math.pow(1 + interestRate, months);
+    return currentValue * (1 + interestRate) ** months;
   }
 
   public static getMonthsSinceCreation(createAt: Date): number {
     const today = new Date();
-    const months =
-      (today.getFullYear() - createAt.getFullYear()) * 12 +
-      today.getMonth() -
-      createAt.getMonth();
-    return months;
+    return differenceInMonths(today, createAt);
   }
 
   public static getTaxRate(createAt: Date): number {
-    const age = InvestmentCalculations.getAge(createAt);
+    const age = this.getAge(createAt);
     if (age < 1) {
       return TAX_RATES.LESS_THAN_ONE_YEAR;
     } else if (age < 2) {
@@ -37,15 +35,6 @@ export class InvestmentCalculations {
 
   public static getAge(createAt: Date): number {
     const today = new Date();
-    let ageInYears = today.getFullYear() - createAt.getFullYear();
-    const isBeforeBirthdayThisYear =
-      today.getMonth() < createAt.getMonth() ||
-      (today.getMonth() === createAt.getMonth() &&
-        today.getDate() < createAt.getDate());
-
-    if (isBeforeBirthdayThisYear) {
-      ageInYears--;
-    }
-    return ageInYears;
+    return differenceInYears(today, createAt);
   }
 }

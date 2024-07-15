@@ -15,6 +15,7 @@ import { IGetInvestmentsByOwnerIdUseCase } from '../usecases/get-investments-by-
 import { IGetInvestmentsWithStatusUseCase } from '../usecases/get-investments-with-status/interface/get-investments-with-status.interface';
 import { ITransactionInvestmentUseCase } from '../usecases/transaction-investment/interfaces/transaction-investment.interface';
 import { IGetInvestmentDetailsUseCase } from '../usecases/get-investment-details/interface/get-investment-details.interface';
+import { ResponseInvestmentDetails } from '../dtos/response-investment-details.dto';
 
 @Injectable()
 export class InvestmentProvider {
@@ -33,7 +34,9 @@ export class InvestmentProvider {
     return this.getInvestmentDetailsUseCase.execute(investment_id);
   }
 
-  async create(payload: CreateInvestmentDto): Promise<Investment> {
+  async create(
+    payload: CreateInvestmentDto,
+  ): Promise<ResponseInvestmentDetails> {
     return this.createInvestmentUseCase.execute(payload);
   }
 

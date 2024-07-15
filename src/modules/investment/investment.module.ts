@@ -18,13 +18,11 @@ import { IGetInvestmentUseCase } from './usecases/get-investment/interfaces/get-
 import { IGetInvestmentsUseCase } from './usecases/get-investments/interfaces/get-investments.interface';
 import { IGetInvestmentsByOwnerIdUseCase } from './usecases/get-investments-by-owner-id/interfaces/get-investments-by-owner-id.interface';
 import { IGetInvestmentsWithStatusUseCase } from './usecases/get-investments-with-status/interface/get-investments-with-status.interface';
-import { IDeleteInvestmentUseCase } from './usecases/delete-investment/interfaces/delete-investment.interface';
-import { DeleteInvestmentUseCase } from './usecases/delete-investment/delete-investment.usecase';
-import { GetInvestmentDetailsUseCase } from './usecases/get-investment-details/get-investment-details.use-case';
 import { IGetInvestmentDetailsUseCase } from './usecases/get-investment-details/interface/get-investment-details.interface';
 import { TransactionRepository } from '@infra/typeorm/repositories/transaction.respository';
 import { TransactionModule } from '@modules/transaction/transaction.module';
 import { ITransactionInvestmentUseCase } from './usecases/transaction-investment/interfaces/transaction-investment.interface';
+import { GetInvestmentDetailsUseCase } from './usecases/get-investment-details/get-investment-details.usecase';
 
 @Module({
   imports: [UserModule, TransactionModule],
@@ -33,6 +31,7 @@ import { ITransactionInvestmentUseCase } from './usecases/transaction-investment
     UserRepository,
     TransactionProvider,
     TransactionRepository,
+    TransactionInvestmentUseCase,
     {
       provide: IUpdateInvestmentUseCase,
       useFactory: (
@@ -49,17 +48,17 @@ import { ITransactionInvestmentUseCase } from './usecases/transaction-investment
     {
       provide: ICreateInvestmentUseCase,
       useFactory: (
-        updateInvestmentUseCase: IUpdateInvestmentUseCase,
         userRepository: UserRepository,
         investmentRepository: InvestmentRepository,
+        transactionRepository: TransactionRepository,
       ) => {
         return new CreateInvestmentUseCase(
-          updateInvestmentUseCase,
           userRepository,
           investmentRepository,
+          transactionRepository,
         );
       },
-      inject: [IUpdateInvestmentUseCase, UserRepository, InvestmentRepository],
+      inject: [UserRepository, InvestmentRepository, TransactionRepository],
     },
     {
       provide: IGetInvestmentUseCase,
@@ -80,10 +79,6 @@ import { ITransactionInvestmentUseCase } from './usecases/transaction-investment
     {
       provide: ITransactionInvestmentUseCase,
       useClass: TransactionInvestmentUseCase,
-    },
-    {
-      provide: IDeleteInvestmentUseCase,
-      useClass: DeleteInvestmentUseCase,
     },
     {
       provide: IGetInvestmentDetailsUseCase,

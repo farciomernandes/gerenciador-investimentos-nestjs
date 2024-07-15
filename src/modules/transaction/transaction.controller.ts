@@ -3,8 +3,6 @@ import {
   Post,
   Body,
   Get,
-  Param,
-  Delete,
   Query,
   HttpStatus,
   HttpCode,
@@ -19,14 +17,19 @@ import {
 import { PaginationFilter } from 'src/shared/filter/pagination.filter';
 import { TransactionProvider } from './providers/transaction.provider';
 import { CreateTransactionDto } from './dtos/create-transaction.dto';
-import { Transaction } from 'typeorm';
 import { ResponseInvestmentTransactionDto } from './dtos/response-transaction.dto';
 import { ListTransactionDto } from './dtos/list-transaction.dto';
+import { TransactionDto } from './dtos/transaction.dto';
+import { TransactionTypes } from './enums/transaction';
+import { TransactionInvestmentUseCase } from '@modules/investment/usecases/transaction-investment/transaction-investment.usecase';
 
 @ApiTags('Transactions')
 @Controller('transactions')
 export class TransactionController {
-  constructor(private readonly TransactionProvider: TransactionProvider) {}
+  constructor(
+    private readonly transactionProvider: TransactionProvider,
+    private readonly transactionInvestmentUseCase: TransactionInvestmentUseCase,
+  ) {}
 
   @Post()
   @ApiOperation({
@@ -38,14 +41,19 @@ export class TransactionController {
   })
   @ApiOkResponse({
     description: 'Created Transaction',
-    type: Transaction,
+    type: TransactionDto,
   })
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   async createTransaction(
     @Body() createTransactionDto: CreateTransactionDto,
   ): Promise<ResponseInvestmentTransactionDto> {
-    return this.TransactionProvider.createTransaction(createTransactionDto);
+    const type = TransactionTypes[createTransactionDto.type];
+    return this.transactionInvestmentUseCase.execute(
+      createTransactionDto.investment_id,
+      createTransactionDto,
+      type,
+    );
   }
 
   @Get()
@@ -61,19 +69,6 @@ export class TransactionController {
   async getTransactions(
     @Query() queryParams: PaginationFilter,
   ): Promise<ListTransactionDto> {
-    return this.TransactionProvider.getTransactions(queryParams);
-  }
-
-  @Delete(':id')
-  @ApiOperation({
-    summary: 'Delete a Transaction',
-  })
-  @ApiOkResponse({
-    description: 'Transaction deleted successfully',
-  })
-  @HttpCode(HttpStatus.OK)
-  @ApiBearerAuth()
-  async deleteTransaction(@Param('id') id: string): Promise<void> {
-    await this.TransactionProvider.deleteTransaction(id);
+    return this.transactionProvider.getTransactions(queryParams);
   }
 }

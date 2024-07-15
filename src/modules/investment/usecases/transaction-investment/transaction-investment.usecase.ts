@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   INVESTMENT_RETURN_RATE,
   InvestmentCalculations,
@@ -22,26 +26,29 @@ export class TransactionInvestmentUseCase
   async execute(
     id: string,
     { amount }: TransactionInvestmentDto,
+    type: string = 'INPUT',
   ): Promise<Transaction> {
     const investment = await this.investmentRepository.findOne({
       where: { id },
     });
+
     if (!investment) {
-      throw new NotFoundException(`Investment with ID ${id} not found`);
+      throw new NotFoundException(`Investmento não encontrado`);
     }
 
     const monthsSinceCreation = InvestmentCalculations.getMonthsSinceCreation(
       investment.creation_date,
     );
+
     const currentValue = InvestmentCalculations.calculateCurrentValue(
-      investment.current_value,
+      amount,
       INVESTMENT_RETURN_RATE,
       monthsSinceCreation,
     );
 
     if (amount > currentValue) {
-      throw new Error(
-        'Transaction value cannot be greater than current investment value',
+      throw new BadRequestException(
+        'O valor da transação não pode ser maior que o valor atual do investimento',
       );
     }
 
@@ -49,14 +56,13 @@ export class TransactionInvestmentUseCase
     const taxAmount = amount * taxRate;
     const netTransactionAmount = amount - taxAmount;
 
-    investment.current_value -= amount;
-    await this.investmentRepository.save(investment);
+    investment.current_value = investment.current_value - amount;
 
     const transaction: CreateTransactionDto = {
       investment_id: id,
       transaction_date: new Date(),
       amount: amount,
-      type: 'OUTPUT',
+      type: type,
       tax: taxAmount,
       net_amount: netTransactionAmount,
     };

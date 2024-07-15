@@ -28,7 +28,9 @@ export class UpdateInvestmentUseCase implements IUpdateInvestmentUseCase {
 
     const amount = Number(payload.amount);
     if (isNaN(amount)) {
-      throw new BadRequestException('Invalid amount provided');
+      throw new BadRequestException(
+        'O valor informado está em um formato inválido',
+      );
     }
 
     const monthsSinceCreation = InvestmentCalculations.getMonthsSinceCreation(
@@ -41,12 +43,12 @@ export class UpdateInvestmentUseCase implements IUpdateInvestmentUseCase {
     );
 
     let updatedValue;
-    if (payload.type === 'input') {
+    if (payload.type === TransactionTypes.INPUT) {
       updatedValue = currentValue + amount;
     } else {
       if (amount > currentValue) {
         throw new BadRequestException(
-          'Withdrawal amount cannot be greater than current investment value',
+          'O valor da retirada não pode ser maior que o valor atual do investimento',
         );
       }
       const taxRate = InvestmentCalculations.getTaxRate(
@@ -69,7 +71,7 @@ export class UpdateInvestmentUseCase implements IUpdateInvestmentUseCase {
 
     if (updatedValue < 0) {
       throw new BadRequestException(
-        'Investment update would result in negative current_value',
+        'A atualização do investimento resultaria em valor final negativo',
       );
     }
 
