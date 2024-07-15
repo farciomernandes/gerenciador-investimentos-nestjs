@@ -85,8 +85,12 @@ import { InvestmentRepositoryInterface } from './mocks/investment.respository.in
     },
     {
       provide: IGetInvestmentUseCase,
-      useClass: GetInvestmentUseCase,
+      useFactory: (investmentRepository: InvestmentRepository) => {
+        return new GetInvestmentUseCase(investmentRepository);
+      },
+      inject: [InvestmentRepository],
     },
+
     {
       provide: IGetInvestmentsUseCase,
       useClass: GetInvestmentsUseCase,

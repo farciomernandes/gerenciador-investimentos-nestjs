@@ -59,6 +59,9 @@ const makeFakeInvestmentWithTransaction = () => ({
 export const makeInvestmentRepositoryStub =
   (): InvestmentRepositoryInterface => {
     class InvestmentRepositoryStub implements InvestmentRepositoryInterface {
+      async findOne(options: any): Promise<any | null> {
+        return Promise.resolve(makeInvestmentMock());
+      }
       async getWithTransactions(name: string, owner_id: string): Promise<any> {
         return Promise.resolve(makeFakeInvestmentWithTransaction());
       }
