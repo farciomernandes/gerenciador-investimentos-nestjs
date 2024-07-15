@@ -67,6 +67,7 @@ export class UpdateInvestmentUseCase implements IUpdateInvestmentUseCase {
         tax: taxAmount,
         net_amount: netWithdrawalAmount,
       });
+
       await this.transactionRepository.save(transaction);
     }
 
@@ -77,7 +78,6 @@ export class UpdateInvestmentUseCase implements IUpdateInvestmentUseCase {
     }
 
     investment.current_value = updatedValue;
-
     return this.investmentRepository.save(investment);
   }
 }

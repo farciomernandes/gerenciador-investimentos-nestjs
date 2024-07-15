@@ -6,7 +6,10 @@ import {
   makeInvestmentMock,
   makeInvestmentRepositoryStub,
 } from '@modules/investment/mocks/investment.repository.mock';
-import { makeTransactionRepositoryStub } from '@modules/transaction/mocks/transaction.repository.mock';
+import {
+  makeTransactionMock,
+  makeTransactionRepositoryStub,
+} from '@modules/transaction/mocks/transaction.repository.mock';
 import { TransactionTypes } from '@modules/transaction/enums/transaction';
 
 type SutTypes = {
@@ -78,5 +81,64 @@ describe('UpdateInvestmentUseCase', () => {
     await expect(
       sut.execute(updateInvestmentDto, 'valid-id'),
     ).rejects.toThrowError('O valor informado está em um formato inválido');
+  });
+
+  test('Should throw an error if the withdrawal amount is greater than the current value', async () => {
+    const { sut, investmentRepositoryStub } = makeSut();
+    const updateInvestmentDto = new UpdateInvestmentDto();
+    updateInvestmentDto.amount = 1500;
+    updateInvestmentDto.type = TransactionTypes.OUTPUT;
+
+    const investment = makeInvestmentMock();
+    investment.current_value = 1000;
+    jest
+      .spyOn(investmentRepositoryStub, 'findOne')
+      .mockResolvedValueOnce(Promise.resolve(investment));
+
+    await expect(
+      sut.execute(updateInvestmentDto, 'valid-id'),
+    ).rejects.toThrowError(
+      'O valor da retirada não pode ser maior que o valor atual do investimento',
+    );
+  });
+
+  test('Should create a transaction and update the investment value on withdrawal', async () => {
+    const { sut, transactionRepositoryStub, investmentRepositoryStub } =
+      makeSut();
+    const updateInvestmentDto = new UpdateInvestmentDto();
+    updateInvestmentDto.amount = 500;
+    updateInvestmentDto.type = TransactionTypes.OUTPUT;
+
+    const investment = makeInvestmentMock();
+    investment.current_value = 1000;
+    jest
+      .spyOn(investmentRepositoryStub, 'findOne')
+      .mockResolvedValueOnce(Promise.resolve(investment));
+
+    const taxRate = 0.1;
+    const taxAmount = updateInvestmentDto.amount * taxRate;
+    const netWithdrawalAmount = updateInvestmentDto.amount - taxAmount;
+    const updatedValue = investment.current_value - netWithdrawalAmount;
+    const transaction = makeTransactionMock();
+
+    jest
+      .spyOn(transactionRepositoryStub, 'create')
+      .mockReturnValueOnce(transaction);
+    jest
+      .spyOn(transactionRepositoryStub, 'save')
+      .mockResolvedValueOnce(Promise.resolve(transaction));
+
+    jest.spyOn(investmentRepositoryStub, 'save').mockResolvedValueOnce(
+      Promise.resolve({
+        ...makeInvestmentMock(),
+        current_value: updatedValue,
+      }),
+    );
+
+    const result = await sut.execute(updateInvestmentDto, 'valid-id');
+
+    expect(result.current_value).toBe(updatedValue);
+    expect(transactionRepositoryStub.create).toHaveBeenCalledTimes(1);
+    expect(transactionRepositoryStub.save).toHaveBeenCalledTimes(1);
   });
 });
