@@ -5,28 +5,32 @@ import { UserRepositoryInterface } from './user.repository.interface';
 
 export const makeUserRepositoryStub = (): UserRepositoryInterface => {
   class UserRepositoryStub implements UserRepositoryInterface {
-    private mockUser = {
-      id: 'valid-id',
-      created_at: new Date(Date.now()),
-      updated_at: new Date(Date.now()),
-      deleted_at: new Date(Date.now()),
-      email: 'valid-email@mail.com',
-      investments: [],
-      name: 'any_name',
-      password: 'any_password',
-    };
-    findOne(where: any): Promise<any> {
+    private mockUser = new User();
+    constructor() {
+      Object.assign(this.mockUser, {
+        id: 'valid-id',
+        created_at: new Date(Date.now()),
+        updated_at: new Date(Date.now()),
+        deleted_at: new Date(Date.now()),
+        email: 'valid-email@mail.com',
+        investments: [],
+        name: 'any_name',
+        password: 'any_password',
+      });
+    }
+    findOne(_where: any): Promise<any> {
       return Promise.resolve(makeFakeUser());
     }
 
-    create(user: Partial<User>): User {
+    create(_user: Partial<User>): User {
       return this.mockUser;
     }
-    save(user: User): Promise<User> {
+    save(_user: User): Promise<User> {
       return Promise.resolve(this.mockUser);
     }
-    find(options: any): Promise<User[]> {
-      return Promise.resolve([this.mockUser, this.mockUser]);
+    async find(_options: any): Promise<User[]> {
+      const users = [this.mockUser, this.mockUser];
+      return Promise.resolve(users);
     }
   }
 
