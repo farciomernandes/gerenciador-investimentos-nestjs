@@ -9,6 +9,7 @@ import {
   HttpCode,
   Request,
   HttpStatus,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateInvestmentDto } from './dtos/create-investment.dto';
 import {
@@ -30,9 +31,11 @@ import { ResponseInvestmentTransactionDto } from '@modules/transaction/dtos/resp
 import { IGetInvestmentDetailsUseCase } from './usecases/get-investment-details/interface/get-investment-details.interface';
 import { ResponseInvestmentDetails } from './dtos/response-investment-details.dto';
 import { TransactionTypes } from '@modules/transaction/enums/transaction';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('Investments')
 @Controller('investments')
+@UseInterceptors(CacheInterceptor)
 export class InvestmentController {
   constructor(
     private readonly createInvestmentUseCase: ICreateInvestmentUseCase,

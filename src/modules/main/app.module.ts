@@ -8,12 +8,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSource } from '@infra/typeorm/datasource.config';
 import { AuthModule } from '@modules/auth/auth.module';
 import { TransactionModule } from '@modules/transaction/transaction.module';
-import { CacheModule } from '@nestjs/cache-manager';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
     CacheModule.register({
-      ttl: 60, // default TTL of 60 seconds
+      ttl: 60, // default,
+      max: 100, // número máximo de itens em cache
+      isGlobal: true,
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
@@ -32,6 +35,11 @@ import { CacheModule } from '@nestjs/cache-manager';
     TransactionModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+  ],
 })
 export class AppModule {}

@@ -6,6 +6,7 @@ import {
   Query,
   HttpStatus,
   HttpCode,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -22,9 +23,11 @@ import { TransactionDto } from './dtos/transaction.dto';
 import { TransactionTypes } from './enums/transaction';
 import { ICreateTransactionUseCase } from './usecases/create-transaction/interface/create-transaction.interface';
 import { ITransactionInvestmentUseCase } from '@modules/investment/usecases/transaction-investment/interfaces/transaction-investment.interface';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('Transactions')
 @Controller('transactions')
+@UseInterceptors(CacheInterceptor)
 export class TransactionController {
   constructor(
     private readonly createTransactionUseCase: ICreateTransactionUseCase,
