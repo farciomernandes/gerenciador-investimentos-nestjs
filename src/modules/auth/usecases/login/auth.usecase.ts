@@ -1,19 +1,19 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UserRepository } from '@infra/typeorm/repositories/user.repository';
 import { LoginResponseDto } from '@modules/auth/dtos/login-response.dto';
 import { LoginDto } from '@modules/auth/dtos/login.dto';
 import { AuthErrorMessages } from '@modules/auth/errors/messages/authErrorMessages';
 import { BcryptCompareUtils } from '@infra/utils/bcrypt-compare.utils';
 import { GetUserByJwtResponseDto } from '@modules/auth/dtos/get-user-by-jwt-response.dto';
 import { IAuthUseCase } from './interfaces/auth.interface';
+import { UserRepositoryInterface } from '@modules/auth/mocks/user.repository.interface';
 
 @Injectable()
 export class AuthUseCase implements IAuthUseCase {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: UserRepositoryInterface,
     private readonly configService: ConfigService,
   ) {}
 

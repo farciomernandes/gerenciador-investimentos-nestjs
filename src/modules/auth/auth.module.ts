@@ -10,6 +10,7 @@ import { UserRepository } from '@infra/typeorm/repositories/user.repository';
 import { AuthProvider } from './provider/auth.provider';
 import { IGetUserByJwtUseCase } from './usecases/get-user-by-jwt/interfaces/get-user-by-jwt.inteface';
 import { IAuthUseCase } from './usecases/login/interfaces/auth.interface';
+import { UserRepositoryInterface } from './mocks/user.repository.interface';
 
 @Global()
 @Module({
@@ -17,6 +18,10 @@ import { IAuthUseCase } from './usecases/login/interfaces/auth.interface';
   controllers: [AuthController],
   providers: [
     AuthUseCase,
+    {
+      provide: UserRepositoryInterface,
+      useClass: UserRepository,
+    },
     AuthProvider,
     UserRepository,
     {
