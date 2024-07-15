@@ -7,15 +7,15 @@ import {
   InvestmentCalculations,
 } from '@modules/@shared/utils/investment-calculations.utils';
 import { Transaction } from '@modules/transaction/entities/transaction.entity';
-import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
-import { TransactionRepository } from '@infra/typeorm/repositories/transaction.respository';
 import { TransactionTypes } from '@modules/transaction/enums/transaction';
+import { InvestmentRepositoryInterface } from '@modules/investment/mocks/investment.respository.interface';
+import { TransactionRepositoryInterface } from '@modules/transaction/mocks/transaction.respository.interface';
 
 @Injectable()
 export class UpdateInvestmentUseCase implements IUpdateInvestmentUseCase {
   constructor(
-    private readonly investmentRepository: InvestmentRepository,
-    private readonly transactionRepository: TransactionRepository,
+    private readonly investmentRepository: InvestmentRepositoryInterface,
+    private readonly transactionRepository: TransactionRepositoryInterface,
   ) {}
 
   async execute(payload: UpdateInvestmentDto, id: string): Promise<Investment> {
@@ -27,6 +27,7 @@ export class UpdateInvestmentUseCase implements IUpdateInvestmentUseCase {
     }
 
     const amount = Number(payload.amount);
+
     if (isNaN(amount)) {
       throw new BadRequestException(
         'O valor informado está em um formato inválido',

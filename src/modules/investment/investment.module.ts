@@ -58,8 +58,8 @@ import { InvestmentRepositoryInterface } from './mocks/investment.respository.in
     {
       provide: IUpdateInvestmentUseCase,
       useFactory: (
-        investmentRepository: InvestmentRepository,
-        transactionRepository: TransactionRepository,
+        investmentRepository: InvestmentRepositoryInterface,
+        transactionRepository: TransactionRepositoryInterface,
       ) => {
         return new UpdateInvestmentUseCase(
           investmentRepository,
