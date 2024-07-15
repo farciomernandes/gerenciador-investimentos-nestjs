@@ -15,19 +15,19 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PaginationFilter } from 'src/shared/filter/pagination.filter';
-import { TransactionProvider } from './providers/transaction.provider';
 import { CreateTransactionDto } from './dtos/create-transaction.dto';
 import { ResponseInvestmentTransactionDto } from './dtos/response-transaction.dto';
 import { ListTransactionDto } from './dtos/list-transaction.dto';
 import { TransactionDto } from './dtos/transaction.dto';
 import { TransactionTypes } from './enums/transaction';
 import { TransactionInvestmentUseCase } from '@modules/investment/usecases/transaction-investment/transaction-investment.usecase';
+import { ICreateTransactionUseCase } from './usecases/create-transaction/interface/create-transaction.interface';
 
 @ApiTags('Transactions')
 @Controller('transactions')
 export class TransactionController {
   constructor(
-    private readonly transactionProvider: TransactionProvider,
+    private readonly createTransactionUseCase: ICreateTransactionUseCase,
     private readonly transactionInvestmentUseCase: TransactionInvestmentUseCase,
   ) {}
 
@@ -69,6 +69,6 @@ export class TransactionController {
   async getTransactions(
     @Query() queryParams: PaginationFilter,
   ): Promise<ListTransactionDto> {
-    return this.transactionProvider.getTransactions(queryParams);
+    return this.createTransactionUseCase.getTransactions(queryParams);
   }
 }

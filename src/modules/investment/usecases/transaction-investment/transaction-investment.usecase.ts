@@ -9,10 +9,10 @@ import {
 } from '@modules/@shared/utils/investment-calculations.utils';
 import { CreateTransactionDto } from '@modules/transaction/dtos/create-transaction.dto';
 import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
-import { TransactionProvider } from '@modules/transaction/providers/transaction.provider';
 import { Transaction } from '@modules/transaction/entities/transaction.entity';
 import { TransactionInvestmentDto } from '@modules/investment/dtos/update-investment.dto';
 import { ITransactionInvestmentUseCase } from './interfaces/transaction-investment.interface';
+import { ICreateTransactionUseCase } from '@modules/transaction/usecases/create-transaction/interface/create-transaction.interface';
 
 @Injectable()
 export class TransactionInvestmentUseCase
@@ -20,7 +20,7 @@ export class TransactionInvestmentUseCase
 {
   constructor(
     private readonly investmentRepository: InvestmentRepository,
-    private readonly transactionProvider: TransactionProvider,
+    private readonly createTransactionUseCase: ICreateTransactionUseCase,
   ) {}
 
   async execute(
@@ -67,6 +67,6 @@ export class TransactionInvestmentUseCase
       net_amount: netTransactionAmount,
     };
 
-    return this.transactionProvider.createTransaction(transaction);
+    return this.createTransactionUseCase.createTransaction(transaction);
   }
 }

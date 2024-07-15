@@ -1,18 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+
+import { PaginationFilter } from 'src/shared/filter/pagination.filter';
+import { TAX_RATES } from '@modules/@shared/utils/investment-calculations.utils';
 import {
   ListTransactionDto,
   TransactionResponse,
-} from '../dtos/list-transaction.dto';
-import { PaginationFilter } from 'src/shared/filter/pagination.filter';
-import { TransactionRepository } from '@infra/typeorm/repositories/transaction.respository';
-import { TAX_RATES } from '@modules/@shared/utils/investment-calculations.utils';
-import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
+} from '@modules/transaction/dtos/list-transaction.dto';
+import { ICreateTransactionUseCase } from './interface/create-transaction.interface';
+import { InvestmentRepositoryInterface } from '@modules/investment/mocks/investment.respository.interface';
+import { TransactionRepositoryInterface } from '@modules/transaction/mocks/transaction.respository.interface';
 
 @Injectable()
-export class TransactionProvider {
+export class CreateTransactionUseCase implements ICreateTransactionUseCase {
   constructor(
-    private readonly transactionRepository: TransactionRepository,
-    private readonly investmentRepository: InvestmentRepository,
+    private readonly transactionRepository: TransactionRepositoryInterface,
+    private readonly investmentRepository: InvestmentRepositoryInterface,
   ) {}
 
   async createTransaction(payload: any): Promise<any> {
@@ -82,6 +84,7 @@ export class TransactionProvider {
           tax: taxAmount,
           net_amount: netAmount,
         };
+
         return transactionResponse;
       },
     );
@@ -92,7 +95,7 @@ export class TransactionProvider {
     };
   }
 
-  private getTaxRate(transactionDate: Date): number {
+  public getTaxRate(transactionDate: Date): number {
     const ageInYears = this.getAgeInYears(transactionDate);
     if (ageInYears < 1) {
       return TAX_RATES.LESS_THAN_ONE_YEAR;
@@ -103,7 +106,7 @@ export class TransactionProvider {
     }
   }
 
-  private getAgeInYears(transactionDate: Date): number {
+  public getAgeInYears(transactionDate: Date): number {
     const today = new Date();
     const ageInMilliseconds = today.getTime() - transactionDate.getTime();
     const ageInYears = ageInMilliseconds / (1000 * 3600 * 24 * 365);

@@ -5,9 +5,9 @@ import {
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { IGetInvestmentDetailsUseCase } from './interface/get-investment-details.interface';
 import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
-import { TransactionRepository } from '@infra/typeorm/repositories/transaction.respository';
 import { Transaction } from '@modules/transaction/entities/transaction.entity';
 import { ResponseInvestmentDetails } from '@modules/investment/dtos/response-investment-details.dto';
+import { TransactionRepositoryInterface } from '@infra/typeorm/repositories/transaction.respository.interface';
 
 @Injectable()
 export class GetInvestmentDetailsUseCase
@@ -15,7 +15,7 @@ export class GetInvestmentDetailsUseCase
 {
   constructor(
     private readonly investmentRepository: InvestmentRepository,
-    private readonly transactionRepository: TransactionRepository,
+    private readonly transactionRepository: TransactionRepositoryInterface,
   ) {}
 
   async execute(investment_id: string): Promise<ResponseInvestmentDetails> {

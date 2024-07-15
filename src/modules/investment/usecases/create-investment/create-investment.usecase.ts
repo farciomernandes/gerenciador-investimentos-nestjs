@@ -10,17 +10,17 @@ import {
   InvestmentCalculations,
 } from '@modules/@shared/utils/investment-calculations.utils';
 import { ResponseInvestmentDetails } from '@modules/investment/dtos/response-investment-details.dto';
-import { TransactionRepository } from '@infra/typeorm/repositories/transaction.respository';
 import { TransactionTypes } from '@modules/transaction/enums/transaction';
 import { User } from '@modules/user/entities/users.entity';
 import { Transaction } from '@modules/transaction/entities/transaction.entity';
+import { TransactionRepositoryInterface } from '@infra/typeorm/repositories/transaction.respository.interface';
 
 @Injectable()
 export class CreateInvestmentUseCase implements ICreateInvestmentUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly investmentRepository: InvestmentRepository,
-    private readonly transactionRepository: TransactionRepository,
+    private readonly transactionRepository: TransactionRepositoryInterface,
   ) {}
 
   async execute(

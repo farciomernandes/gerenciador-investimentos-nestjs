@@ -4,7 +4,6 @@ import { InvestmentController } from './investment.controller';
 import { InvestmentProvider } from './providers/investment.provider';
 import { UserRepository } from '@infra/typeorm/repositories/user.repository';
 import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
-import { TransactionProvider } from '@modules/transaction/providers/transaction.provider';
 import { CreateInvestmentUseCase } from './usecases/create-investment/create-investment.usecase';
 import { UpdateInvestmentUseCase } from './usecases/update-investment/update-investment.usecase';
 import { GetInvestmentUseCase } from './usecases/get-investment/get-investment.usecase';
@@ -23,13 +22,37 @@ import { TransactionRepository } from '@infra/typeorm/repositories/transaction.r
 import { TransactionModule } from '@modules/transaction/transaction.module';
 import { ITransactionInvestmentUseCase } from './usecases/transaction-investment/interfaces/transaction-investment.interface';
 import { GetInvestmentDetailsUseCase } from './usecases/get-investment-details/get-investment-details.usecase';
+import { CreateTransactionUseCase } from '@modules/transaction/usecases/create-transaction/create-transaction.usecase';
+import { ICreateTransactionUseCase } from '@modules/transaction/usecases/create-transaction/interface/create-transaction.interface';
+import { TransactionRepositoryInterface } from '@modules/transaction/mocks/transaction.respository.interface';
+import { InvestmentRepositoryInterface } from './mocks/investment.respository.interface';
 
 @Module({
   imports: [UserModule, TransactionModule],
   providers: [
     InvestmentRepository,
     UserRepository,
-    TransactionProvider,
+    {
+      provide: TransactionRepositoryInterface,
+      useClass: TransactionRepository,
+    },
+    {
+      provide: InvestmentRepositoryInterface,
+      useClass: InvestmentRepository,
+    },
+    {
+      provide: ICreateTransactionUseCase,
+      useFactory: (
+        transactionRepository: TransactionRepositoryInterface,
+        investmentRepository: InvestmentRepositoryInterface,
+      ) => {
+        return new CreateTransactionUseCase(
+          transactionRepository,
+          investmentRepository,
+        );
+      },
+      inject: [TransactionRepository, InvestmentRepository],
+    },
     TransactionRepository,
     TransactionInvestmentUseCase,
     {
@@ -50,7 +73,7 @@ import { GetInvestmentDetailsUseCase } from './usecases/get-investment-details/g
       useFactory: (
         userRepository: UserRepository,
         investmentRepository: InvestmentRepository,
-        transactionRepository: TransactionRepository,
+        transactionRepository: TransactionRepositoryInterface,
       ) => {
         return new CreateInvestmentUseCase(
           userRepository,
