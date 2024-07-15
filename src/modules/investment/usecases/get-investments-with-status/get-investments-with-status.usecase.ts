@@ -5,15 +5,17 @@ import {
 } from '@modules/investment/dtos/response-investment.dto';
 import { InvestmentStatus } from '@modules/investment/enums/investments';
 import { FindManyOptions } from 'typeorm';
-import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
 import { Investment } from '@modules/investment/entities/investment.entity';
 import { IGetInvestmentsWithStatusUseCase } from './interface/get-investments-with-status.interface';
+import { InvestmentRepositoryInterface } from '@modules/investment/mocks/investment.respository.interface';
 
 @Injectable()
 export class GetInvestmentsWithStatusUseCase
   implements IGetInvestmentsWithStatusUseCase
 {
-  constructor(private readonly investmentRepository: InvestmentRepository) {}
+  constructor(
+    private readonly investmentRepository: InvestmentRepositoryInterface,
+  ) {}
 
   async execute(
     page: number = 1,
