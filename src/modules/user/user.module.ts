@@ -3,14 +3,18 @@ import { UserProvider } from './providers/user.provider';
 import { UserController } from './user.controller';
 import { UserRepository } from '@infra/typeorm/repositories/user.repository';
 import { ICreateUserUseCase } from './usecases/interfaces/create-user.interface';
-import { CreateUserUseCase } from './usecases/create-user/create-user.use-case';
+import { CreateUserUseCase } from './usecases/create-user/create-user.usecase';
 import { IFindAllUsersUseCase } from './usecases/find-all-users/interfaces/find-all-users.interface';
 import { FindAllUsersUseCase } from './usecases/find-all-users/find-all-users.usecase';
+import { UserRepositoryInterface } from '@modules/auth/mocks/user.repository.interface';
 
 @Module({
   imports: [],
   providers: [
-    UserRepository,
+    {
+      provide: UserRepositoryInterface,
+      useClass: UserRepository,
+    },
     UserProvider,
     {
       provide: ICreateUserUseCase,

@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '@infra/typeorm/repositories/user.repository';
 import { BadRequestException } from '@nestjs/common';
 import { User } from '@modules/user/entities/users.entity';
 import { CreateUserDto } from '@modules/user/dtos/create-user.dto';
 import { BcryptHashUtils } from '@infra/utils/bcrypt-hash.utils';
+import { ICreateUserUseCase } from '../interfaces/create-user.interface';
+import { UserRepositoryInterface } from '@modules/auth/mocks/user.repository.interface';
 
 @Injectable()
-export class CreateUserUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+export class CreateUserUseCase implements ICreateUserUseCase {
+  constructor(private readonly userRepository: UserRepositoryInterface) {}
 
   async execute(payload: CreateUserDto): Promise<User> {
     const alreadyExists = await this.userRepository.findOne({
