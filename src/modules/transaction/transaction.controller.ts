@@ -20,15 +20,15 @@ import { ResponseInvestmentTransactionDto } from './dtos/response-transaction.dt
 import { ListTransactionDto } from './dtos/list-transaction.dto';
 import { TransactionDto } from './dtos/transaction.dto';
 import { TransactionTypes } from './enums/transaction';
-import { TransactionInvestmentUseCase } from '@modules/investment/usecases/transaction-investment/transaction-investment.usecase';
 import { ICreateTransactionUseCase } from './usecases/create-transaction/interface/create-transaction.interface';
+import { ITransactionInvestmentUseCase } from '@modules/investment/usecases/transaction-investment/interfaces/transaction-investment.interface';
 
 @ApiTags('Transactions')
 @Controller('transactions')
 export class TransactionController {
   constructor(
     private readonly createTransactionUseCase: ICreateTransactionUseCase,
-    private readonly transactionInvestmentUseCase: TransactionInvestmentUseCase,
+    private readonly transactionInvestmentUseCase: ITransactionInvestmentUseCase,
   ) {}
 
   @Post()

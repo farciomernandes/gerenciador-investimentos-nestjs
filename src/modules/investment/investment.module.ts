@@ -53,6 +53,10 @@ import { InvestmentRepositoryInterface } from './mocks/investment.respository.in
       },
       inject: [TransactionRepository, InvestmentRepository],
     },
+    {
+      provide: ICreateTransactionUseCase,
+      useClass: CreateTransactionUseCase,
+    },
     TransactionRepository,
     TransactionInvestmentUseCase,
     {
@@ -119,7 +123,7 @@ import { InvestmentRepositoryInterface } from './mocks/investment.respository.in
           createTransactionUseCase,
         );
       },
-      inject: [InvestmentRepository, CreateTransactionUseCase],
+      inject: [InvestmentRepository, ICreateTransactionUseCase],
     },
     {
       provide: IGetInvestmentDetailsUseCase,

@@ -6,11 +6,17 @@ import { TransactionInvestmentUseCase } from '@modules/investment/usecases/trans
 import { CreateTransactionUseCase } from './usecases/create-transaction/create-transaction.usecase';
 import { ICreateTransactionUseCase } from './usecases/create-transaction/interface/create-transaction.interface';
 import { TransactionRepositoryInterface } from './mocks/transaction.respository.interface';
+import { ITransactionInvestmentUseCase } from '@modules/investment/usecases/transaction-investment/interfaces/transaction-investment.interface';
+import { InvestmentRepositoryInterface } from '@modules/investment/mocks/investment.respository.interface';
 
 @Module({
   imports: [],
   providers: [
     TransactionRepository,
+    {
+      provide: InvestmentRepositoryInterface,
+      useClass: InvestmentRepository,
+    },
     {
       provide: ICreateTransactionUseCase,
       useFactory: (
@@ -25,7 +31,19 @@ import { TransactionRepositoryInterface } from './mocks/transaction.respository.
       inject: [TransactionRepository, InvestmentRepository],
     },
     InvestmentRepository,
-    TransactionInvestmentUseCase,
+    {
+      provide: ITransactionInvestmentUseCase,
+      useFactory: (
+        investmentRepository: InvestmentRepositoryInterface,
+        createTransactionUseCase: ICreateTransactionUseCase,
+      ) => {
+        return new TransactionInvestmentUseCase(
+          investmentRepository,
+          createTransactionUseCase,
+        );
+      },
+      inject: [InvestmentRepositoryInterface, ICreateTransactionUseCase],
+    },
   ],
   controllers: [TransactionController],
 })
