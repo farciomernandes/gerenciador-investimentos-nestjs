@@ -2,12 +2,16 @@
 import { AuthUseCase } from './auth.usecase';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { LoginDto } from '@modules/auth/dtos/login.dto';
 import { LoginResponseDto } from '@modules/auth/dtos/login-response.dto';
 import { GetUserByJwtResponseDto } from '@modules/auth/dtos/get-user-by-jwt-response.dto';
 import { BcryptCompareUtils } from '@infra/utils/bcrypt-compare.utils';
 import { BadRequestException } from '@nestjs/common';
 import { UserRepositoryInterface } from '@modules/auth/mocks/user.repository.interface';
+import {
+  makeFakeUser,
+  makeLoginDto,
+  makeUserRepositoryStub,
+} from '@modules/auth/mocks/user.repository.mock';
 
 jest.mock('@nestjs/config', () => ({
   ConfigService: jest.fn().mockImplementation(() => ({
@@ -132,25 +136,4 @@ describe('AuthUseCase', () => {
       }),
     );
   });
-});
-
-const makeUserRepositoryStub = (): UserRepositoryInterface => {
-  class UserRepositoryStub implements UserRepositoryInterface {
-    findOne(where: any): Promise<any> {
-      return Promise.resolve(makeFakeUser());
-    }
-  }
-
-  return new UserRepositoryStub();
-};
-
-const makeLoginDto = (): LoginDto => ({
-  email: 'any_email@mail.com',
-  password: 'any_password',
-});
-
-const makeFakeUser = (): any => ({
-  id: 'any_id',
-  email: 'any_email@mail.com',
-  password: 'hashed_password',
 });
