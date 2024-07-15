@@ -36,14 +36,14 @@ export class TransactionController {
 
   @Post()
   @ApiOperation({
-    summary: 'Create a Transaction',
+    summary: 'Criar uma Transação',
   })
   @ApiBody({
     type: CreateTransactionDto,
-    description: 'Payload to create a Transaction',
+    description: 'Payload para criar uma Transação',
   })
   @ApiOkResponse({
-    description: 'Created Transaction',
+    description: 'Transação criada com sucesso',
     type: TransactionDto,
   })
   @HttpCode(HttpStatus.OK)
@@ -61,10 +61,10 @@ export class TransactionController {
 
   @Get()
   @ApiOperation({
-    summary: 'Get all Transactions',
+    summary: 'Obter todas as Transações',
   })
   @ApiOkResponse({
-    description: 'Return all Transactions',
+    description: 'Retorna todas as Transações',
     type: ListTransactionDto,
   })
   @HttpCode(HttpStatus.OK)

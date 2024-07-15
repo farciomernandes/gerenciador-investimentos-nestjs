@@ -13,12 +13,12 @@ import {
   Get,
   Request,
 } from '@nestjs/common';
-import { LoginResponseDto } from './dtos/login-response.dto';
-import { LoginDto } from './dtos/login.dto';
-import { Public } from './decorator/public';
-import { GetUserByJwtResponseDto } from './dtos/get-user-by-jwt-response.dto';
 import { Request as expressRequest } from 'express';
-import { AuthProvider } from './provider/auth.provider';
+import { AuthProvider } from '@modules/auth/provider/auth.provider';
+import { Public } from '@modules/auth/decorator/public';
+import { LoginResponseDto } from '@modules/auth/dtos/login-response.dto';
+import { LoginDto } from '@modules/auth/dtos/login.dto';
+import { GetUserByJwtResponseDto } from '@modules/auth/dtos/get-user-by-jwt-response.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -28,24 +28,27 @@ export class AuthController {
   @Post('login')
   @Public()
   @ApiOperation({
-    summary: 'Authenticate User.',
+    summary: 'Autenticar Usuário.',
     description:
-      'This endpoint is responsible for creating JWT token for authenticate users',
+      'Este endpoint é responsável por criar um token JWT para autenticar usuários.',
   })
   @ApiOkResponse({
     status: HttpStatus.OK,
     type: LoginResponseDto,
   })
-  @ApiBody({ type: LoginDto })
+  @ApiBody({
+    type: LoginDto,
+    description: 'Payload para autenticar um usuário.',
+  })
   async login(@Body() loginDto: LoginDto) {
     return this.authProvider.login(loginDto);
   }
 
   @Get('/me')
   @ApiOperation({
-    summary: 'Get a User by HTTP Authorization Header.',
+    summary: 'Obter um Usuário pelo Cabeçalho de Autorização HTTP.',
     description:
-      'This endpoint is responsible for getting a User by JWT Authorization Header in the application.',
+      'Este endpoint é responsável por obter um Usuário pelo Cabeçalho de Autorização JWT na aplicação.',
   })
   @ApiOkResponse({
     status: HttpStatus.OK,

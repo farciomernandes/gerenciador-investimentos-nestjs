@@ -24,14 +24,14 @@ export class UserController {
 
   @Post()
   @ApiOperation({
-    summary: 'Create user',
+    summary: 'Criar usuário',
   })
   @ApiBody({
     type: CreateUserDto,
-    description: 'Payload to create user',
+    description: 'Payload para criar usuário',
   })
   @ApiOkResponse({
-    description: 'Created user',
+    description: 'Usuário criado com sucesso',
     type: CreateUserDto,
   })
   @HttpCode(HttpStatus.OK)
@@ -42,10 +42,10 @@ export class UserController {
 
   @Get()
   @ApiOperation({
-    summary: 'Find all users',
+    summary: 'Buscar todos os usuários',
   })
   @ApiOkResponse({
-    description: 'Created user',
+    description: 'Retorna todos os usuários cadastrados',
     type: UserResponseDto,
     isArray: true,
   })

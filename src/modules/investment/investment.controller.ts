@@ -50,15 +50,15 @@ export class InvestmentController {
 
   @Post()
   @ApiOperation({
-    summary: 'Create an investment',
+    summary: 'Criar um investimento',
   })
   @ApiBody({
     type: CreateInvestmentDto,
     description:
-      'Payload to create an investment or update amount if name investment already exists!',
+      'Payload para criar um investimento ou atualizar o valor se o investimento já existir.',
   })
   @ApiOkResponse({
-    description: 'Created Investment',
+    description: 'Investimento criado',
     type: ResponseInvestmentDetails,
   })
   @HttpCode(HttpStatus.OK)
@@ -73,10 +73,10 @@ export class InvestmentController {
 
   @Get('owner/:owner_id')
   @ApiOperation({
-    summary: 'Get all investments by owner id',
+    summary: 'Obter todos os investimentos por ID do proprietário',
   })
   @ApiOkResponse({
-    description: 'Return all investments by owner id',
+    description: 'Retorna todos os investimentos por ID do proprietário',
     type: ResponseInvestmentDto,
   })
   @HttpCode(HttpStatus.OK)
@@ -90,10 +90,10 @@ export class InvestmentController {
 
   @Get()
   @ApiOperation({
-    summary: 'Get all investments',
+    summary: 'Obter todos os investimentos',
   })
   @ApiOkResponse({
-    description: 'Return all investments',
+    description: 'Retorna todos os investimentos',
     type: ResponseInvestmentDto,
   })
   @HttpCode(HttpStatus.OK)
@@ -115,10 +115,10 @@ export class InvestmentController {
 
   @Get(':id')
   @ApiOperation({
-    summary: 'Get details to investment',
+    summary: 'Obter detalhes do investimento',
   })
   @ApiOkResponse({
-    description: 'Return details to investment',
+    description: 'Retorna detalhes do investimento',
     type: ResponseInvestmentDetails,
   })
   @HttpCode(HttpStatus.OK)
@@ -134,7 +134,7 @@ export class InvestmentController {
     description: 'Retirar valor de um investimento',
   })
   @ApiOkResponse({
-    description: 'Transaction successful',
+    description: 'Transação realizada com sucesso',
     type: ResponseInvestmentTransactionDto,
   })
   @HttpCode(HttpStatus.OK)
