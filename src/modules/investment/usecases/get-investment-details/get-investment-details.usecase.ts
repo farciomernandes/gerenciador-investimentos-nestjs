@@ -4,17 +4,17 @@ import {
 } from '@modules/@shared/utils/investment-calculations.utils';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { IGetInvestmentDetailsUseCase } from './interface/get-investment-details.interface';
-import { InvestmentRepository } from '@infra/typeorm/repositories/investment.respository';
 import { Transaction } from '@modules/transaction/entities/transaction.entity';
 import { ResponseInvestmentDetails } from '@modules/investment/dtos/response-investment-details.dto';
 import { TransactionRepositoryInterface } from '@modules/transaction/mocks/transaction.respository.interface';
+import { InvestmentRepositoryInterface } from '@modules/investment/mocks/investment.respository.interface';
 
 @Injectable()
 export class GetInvestmentDetailsUseCase
   implements IGetInvestmentDetailsUseCase
 {
   constructor(
-    private readonly investmentRepository: InvestmentRepository,
+    private readonly investmentRepository: InvestmentRepositoryInterface,
     private readonly transactionRepository: TransactionRepositoryInterface,
   ) {}
 
