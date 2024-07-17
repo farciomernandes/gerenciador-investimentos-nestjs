@@ -7,12 +7,17 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
       - ./postgres/database-generate-scripts:/docker-entrypoint-initdb.d
-    env_file:
-      - .env
+      - ./postgres/database-generate-scripts/generate-test-database.sh:/docker-entrypoint-initdb.d/generate-test-database.sh
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
     ports:
       - 5432:5432
     networks:
       - my-network
+
+    
 
 networks:
   my-network:
