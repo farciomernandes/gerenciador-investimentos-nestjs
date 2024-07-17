@@ -18,7 +18,7 @@ API construída em NestJs para gerenciar investimentos, aplicando conceitos de c
 
 Você precisará de:
 
-- Node na versão 16 ou superior
+- Node na versão 18 ou superior
 - Docker
 - VsCode ou editor de sua preferência
 - NPM ou YARN
@@ -26,6 +26,18 @@ Você precisará de:
 ### 🔧 Instalação
 
 - Adicione as variáveis de ambiente, seguindo o exemplo do .env.example na raiz do projeto
+
+- Coloque os seguintes valores no seu .env de dabse para esse teste:
+
+```
+    # Database
+    POSTGRES_HOST=localhost
+    POSTGRES_PORT=5432
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=postgres
+    POSTGRES_DB=postgres
+    POSTGRES_DB_TEST=postgres
+```
 
 - Cria a imagem como docker 
 
