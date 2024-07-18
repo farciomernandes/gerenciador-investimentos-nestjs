@@ -27,7 +27,7 @@ Você precisará de:
 
 - Adicione as variáveis de ambiente, seguindo o exemplo do .env.example na raiz do projeto
 
-- Coloque os seguintes valores no seu .env de dabse para esse teste:
+- Coloque os seguintes valores no seu .env de database para esse teste:
 
 ```
     # Database
