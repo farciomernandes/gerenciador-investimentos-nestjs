@@ -1,3 +1,4 @@
+import { Public } from '@modules/auth/decorator/public';
 import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
@@ -18,6 +19,7 @@ export class HealthController {
   @Get('health')
   @HealthCheck()
   @ApiTags('HealthCheck')
+  @Public()
   check() {
     return this.health.check([
       () => this.http.pingCheck('local', 'http://localhost:3000'),
