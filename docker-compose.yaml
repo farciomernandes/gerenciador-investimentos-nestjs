@@ -1,28 +1,32 @@
-version: '3.4'
+version: "3.9"
 
 services:
   db:
     image: postgres:latest
-    container_name: nest.postgres
-    volumes:
-      - db:/var/lib/postgresql/data
-      - ./postgres/database-generate-scripts:/docker-entrypoint-initdb.d
-      - ./postgres/database-generate-scripts/generate-test-database.sh:/docker-entrypoint-initdb.d/generate-test-database.sh
+    container_name: db_postgres
+    restart: always
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432:5432
-    networks:
-      - my-network
+    volumes:
+      - pgdata:/data/postgres
 
-    
-
-networks:
-  my-network:
-    driver: bridge
+  app:
+    build: .
+    container_name: transaction_app
+    ports:
+      - 3333:3333
+    volumes:
+      - .:/usr/app
+    depends_on:
+      - db
+    command: ["yarn", "start:dev"]
+    env_file:
+      - .env 
 
 volumes:
-  db:
+  pgdata:
     driver: local
