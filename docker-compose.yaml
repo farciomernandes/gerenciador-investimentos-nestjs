@@ -14,6 +14,15 @@ services:
     volumes:
       - pgdata:/data/postgres
 
+  migration:
+    build: .
+    container_name: transaction_migration
+    depends_on:
+      - db
+    command: ["yarn", "migration:run"]
+    env_file:
+      - .env 
+
   app:
     build: .
     container_name: transaction_app
