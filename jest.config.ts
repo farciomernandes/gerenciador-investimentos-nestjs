@@ -21,11 +21,13 @@ export default {
     '/node_modules/',
     './src/infra/*',
     './src/modules/main/*',
+    './src/.*\\.mock\\..*',
   ],
   coveragePathIgnorePatterns: [
     '/node_modules/',
     './src/infra/*',
     './src/modules/main/*',
+    './src/.*\\.mock\\..*',
   ],
   testRegex: '.*\\.spec\\.ts$',
   testResultsProcessor: 'jest-sonar-reporter',

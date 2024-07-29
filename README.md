@@ -23,38 +23,30 @@ Você precisará de:
 - VsCode ou editor de sua preferência
 - NPM ou YARN
 
-### 🔧 Instalação
+### 🔧 Instalação e inicio
 
 - Adicione as variáveis de ambiente, seguindo o exemplo do .env.example na raiz do projeto
-
-- Coloque os seguintes valores no seu .env de database para esse teste:
-
-```
-    # Database
-    POSTGRES_HOST=localhost
-    POSTGRES_PORT=5432
-    POSTGRES_USER=postgres
-    POSTGRES_PASSWORD=postgres
-    POSTGRES_DB=postgres
-    POSTGRES_DB_TEST=postgres
-```
-
-- Cria a imagem como docker 
-
-```
-docker build docker build -t investment_api . 
-```
-
-- Crie o container com o banco de dados:
-
-```
-docker-compose up
-```
 
 - Instale as depêndencias do projeto:
 
 ```
 yarn
+```
+
+- Suba o container com banco dados e aplicação:
+
+```
+docker-compose up
+```
+
+### 🔧 Se preferir rode localmente na sua máquina seguindo os passos abaixo
+
+- Remova o app e migrations do docker-compose
+
+- Suba o container com banco dados:
+
+```
+docker-compose up
 ```
 
 - Rode as migrations:
@@ -68,7 +60,6 @@ yarn migration:run
 ```
 yarn start:dev
 ```
-
 
 ## ⚙️ Executando os testes
 
