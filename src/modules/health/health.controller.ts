@@ -22,7 +22,7 @@ export class HealthController {
   @Public()
   check() {
     return this.health.check([
-      () => this.http.pingCheck('local', 'http://localhost:3000'),
+      () => this.http.pingCheck('local', 'http://localhost:3333'),
     ]);
   }
 }
