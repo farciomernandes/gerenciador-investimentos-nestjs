@@ -80,6 +80,7 @@ export class InvestmentController {
   })
   @HttpCode(HttpStatus.OK)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
+  @ApiBearerAuth()
   async findAllByOwnerId(
     @Param('owner_id') owner_id: string,
     @Query() filter: InvesmentParamsDTO,
@@ -97,7 +98,7 @@ export class InvestmentController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  @Throttle({ default: { limit: 50, ttl: 60000 } })
   async findAll(
     @Query() filter: InvesmentParamsDTO,
   ): Promise<ResponseInvestmentDto> {

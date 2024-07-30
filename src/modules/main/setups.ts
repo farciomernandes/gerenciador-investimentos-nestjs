@@ -1,3 +1,4 @@
+import { NewrelicInterceptor } from '@infra/newrelic/newrelic.interceptor';
 import {
   type INestApplication,
   ValidationPipe,
@@ -78,6 +79,6 @@ export abstract class Setups {
 
   static async startDependencies(): Promise<void> {
     this.app.enableShutdownHooks();
-    await this.app.startAllMicroservices();
+    this.app.useGlobalInterceptors(new NewrelicInterceptor());
   }
 }
